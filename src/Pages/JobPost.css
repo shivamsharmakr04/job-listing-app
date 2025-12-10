@@ -1,0 +1,441 @@
+:root {
+  --snav-width: 260px;
+
+  --bg-main: radial-gradient(circle at top left, #1d4ed8 0%, #020617 55%);
+  --panel-bg: rgba(15, 23, 42, 0.96);
+  --card-bg: #020617;
+  --card-border: #1f2937;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --accent: #3b82f6;
+  --accent-soft: rgba(59, 130, 246, 0.2);
+  --success: #22c55e;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --transition: 0.2s ease;
+}
+
+/* ============== PAGE WRAPPER ============== */
+
+.postjob-page {
+  min-height: 100vh;
+  padding: 24px 32px;
+  padding-left: calc(var(--snav-width, 260px) + 32px);
+  background: --bg-main;
+  background: radial-gradient(circle at top left, #1d4ed8 0%, #020617 55%);
+  box-sizing: border-box;
+  color: var(--text-main);
+  transition: padding-left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Center the whole form area */
+.postjob-page > header,
+.postjob-form {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============== HEADER ============== */
+
+.postjob-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--panel-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+}
+
+.postjob-header h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.postjob-header p {
+  margin: 4px 0 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.postjob-actions-top {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============== FORM LAYOUT ============== */
+
+.postjob-form {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* left column (all big sections) */
+.postjob-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* right column (Apply + Preview + buttons) */
+.postjob-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 16px;
+}
+
+/* ============== CARDS ============== */
+
+.postjob-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.85);
+}
+
+.postjob-card h2,
+.postjob-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* subtle section subtitles */
+.hint {
+  margin: 4px 0 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* side-card just reuses postjob-card spacing */
+.side-card {
+  padding: 14px 16px;
+}
+
+/* ============== STEP NUMBERS (1–4) ============== */
+/* done only with CSS – no JSX changes */
+
+.postjob-main .postjob-card:nth-of-type(1) h2::before,
+.postjob-main .postjob-card:nth-of-type(2) h2::before,
+.postjob-main .postjob-card:nth-of-type(3) h2::before,
+.postjob-main .postjob-card:nth-of-type(4) h2::before {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: #e0f2fe;
+  font-size: 0.75rem;
+}
+
+/* Step numbers */
+.postjob-main .postjob-card:nth-of-type(1) h2::before {
+  content: "1";
+}
+.postjob-main .postjob-card:nth-of-type(2) h2::before {
+  content: "2";
+}
+.postjob-main .postjob-card:nth-of-type(3) h2::before {
+  content: "3";
+}
+.postjob-main .postjob-card:nth-of-type(4) h2::before {
+  content: "4";
+}
+
+/* ============== GRID & FIELDS ============== */
+
+/* More structured columns on large screens */
+.postjob-main .postjob-card:nth-of-type(1) .grid-2 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.postjob-main .postjob-card:nth-of-type(2) .grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.req {
+  color: #fb7185;
+}
+
+/* Inputs / selects / textarea */
+
+.field input,
+.field select,
+.field textarea {
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  font-size: 0.82rem;
+  background: #020617;
+  color: var(--text-main);
+  outline: none;
+  resize: vertical;
+  transition: border var(--transition), box-shadow var(--transition),
+    background var(--transition);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field select:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.6);
+}
+
+/* Textareas */
+.field textarea {
+  min-height: 80px;
+}
+
+/* ============== SALARY ROW ============== */
+
+.salary-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.salary-row select {
+  min-width: 70px;
+}
+
+.salary-row input {
+  flex: 1;
+}
+
+.salary-sep {
+  color: var(--text-muted);
+}
+
+/* ============== SKILLS ============== */
+
+.skills-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.skills-input-row input {
+  flex: 1;
+}
+
+.skills-chip-row {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: #bfdbfe;
+  font-size: 0.72rem;
+  border: 1px solid rgba(59, 130, 246, 0.7);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.skill-chip button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-main);
+}
+
+/* ============== PREVIEW (RIGHT SIDE) ============== */
+
+.preview-title {
+  margin: 4px 0 2px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.preview-company {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.preview-meta {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.preview-salary {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: var(--success);
+}
+
+.preview-skills {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.preview-skills span {
+  font-size: 0.7rem;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+/* ============== BUTTONS ============== */
+
+.btn-outline-small {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  background: #020617;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background var(--transition), border var(--transition),
+    transform 0.1s ease, box-shadow var(--transition);
+}
+
+.btn-outline-small:hover {
+  background: #0f172a;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.6);
+}
+
+.btn-primary {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #eff6ff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.1s ease,
+    box-shadow var(--transition);
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.6);
+}
+
+.btn-primary-large {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #eff6ff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.1s ease,
+    box-shadow var(--transition);
+}
+
+.btn-primary-large:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.6);
+}
+
+/* footer buttons on the right side */
+.postjob-footer-buttons {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ============== RESPONSIVE ============== */
+
+@media (max-width: 1024px) {
+  .postjob-page {
+    padding: 20px;
+    padding-left: calc(var(--snav-width, 260px) + 20px);
+  }
+}
+
+@media (max-width: 900px) {
+  .postjob-form {
+    grid-template-columns: 1fr;
+  }
+
+  .postjob-side {
+    position: static;
+  }
+
+  /* on tablets, go back to auto-fit grid for basics */
+  .postjob-main .postjob-card:nth-of-type(1) .grid-2,
+  .postjob-main .postjob-card:nth-of-type(2) .grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .postjob-page {
+    padding: 16px;
+    padding-left: 16px; /* sidenav overlays on mobile */
+  }
+
+  .postjob-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .postjob-actions-top {
+    align-self: stretch;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .postjob-page {
+    padding: 12px;
+  }
+
+  .salary-row {
+    flex-wrap: wrap;
+  }
+}

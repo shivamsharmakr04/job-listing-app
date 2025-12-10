@@ -1,0 +1,425 @@
+:root {
+  /* This is set/updated by SideNav – we just use it */
+  --snav-width: 260px;
+
+  --apps-bg: radial-gradient(circle at top left, #1d4ed8 0, #020617 55%);
+  --apps-panel-bg: rgba(15, 23, 42, 0.96);
+  --apps-card-bg: #020617;
+  --apps-card-border: #1f2937;
+
+  --apps-text-main: #e5e7eb;
+  --apps-text-muted: #9ca3af;
+
+  --apps-accent: #3b82f6;
+  --apps-accent-soft: rgba(59, 130, 246, 0.2);
+  --apps-radius-lg: 18px;
+  --apps-radius-md: 12px;
+  --apps-transition: 0.2s ease;
+}
+
+/* PAGE WRAPPER – aligned with sidenav like Home/Profile */
+.apps-page {
+  min-height: 100vh;
+  padding: 24px 32px;
+  padding-left: calc(var(--snav-width, 260px) + 32px);
+  box-sizing: border-box;
+  background: var(--apps-bg);
+  color: var(--apps-text-main);
+  transition: padding-left 0.3s ease;
+}
+
+/* ================= HEADER ================= */
+
+.apps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 16px;
+  background: var(--apps-panel-bg);
+  border-radius: var(--apps-radius-lg);
+  padding: 16px 18px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+}
+
+.apps-header h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--apps-text-main);
+}
+
+.apps-header p {
+  margin: 4px 0 0;
+  color: var(--apps-text-muted);
+  font-size: 0.86rem;
+}
+
+.apps-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Buttons reused with better dark styling */
+.btn-outline-small {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  background: #020617;
+  font-size: 0.82rem;
+  cursor: pointer;
+  color: var(--apps-text-main);
+  transition: background var(--apps-transition), border var(--apps-transition),
+    transform 0.1s ease, box-shadow var(--apps-transition);
+}
+
+.btn-outline-small:hover {
+  background: #111827;
+  border-color: var(--apps-accent);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ================= TOOLBAR (search + filters + sort) ================= */
+
+.apps-toolbar {
+  margin-top: 12px;
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Search box */
+.apps-search-box input {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  font-size: 0.86rem;
+  background: #020617;
+  color: var(--apps-text-main);
+  outline: none;
+  transition: border var(--apps-transition), box-shadow var(--apps-transition),
+    background var(--apps-transition);
+}
+
+.apps-search-box input::placeholder {
+  color: var(--apps-text-muted);
+}
+
+.apps-search-box input:focus-visible {
+  border-color: var(--apps-accent);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.6);
+  background: #020617;
+}
+
+/* filter pills */
+.apps-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.apps-filter-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #020617;
+  font-size: 0.78rem;
+  color: var(--apps-text-main);
+  cursor: pointer;
+  transition: background var(--apps-transition), border var(--apps-transition),
+    transform 0.1s ease, color var(--apps-transition);
+}
+
+.apps-filter-pill:hover {
+  background: #0b1120;
+  transform: translateY(-1px);
+}
+
+.apps-filter-pill.active {
+  background: var(--apps-accent);
+  border-color: var(--apps-accent);
+  color: #eff6ff;
+}
+
+/* sort */
+.apps-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.apps-sort label {
+  font-size: 0.78rem;
+  color: var(--apps-text-muted);
+}
+
+.apps-sort select {
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  font-size: 0.82rem;
+  background: #020617;
+  color: var(--apps-text-main);
+  outline: none;
+}
+
+/* ================= LIST ================= */
+
+.apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Application card matching dark theme */
+.app-card {
+  background: var(--apps-card-bg);
+  border-radius: var(--apps-radius-md);
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--apps-card-border);
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+  gap: 14px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.app-card:hover {
+  transform: translateY(-4px);
+  border-color: #60a5fa;
+  box-shadow: 0 20px 48px rgba(37, 99, 235, 0.7);
+}
+
+/* left/main section */
+.app-main h2 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--apps-text-main);
+}
+
+.app-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.app-company {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--apps-text-muted);
+}
+
+.app-meta {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  color: var(--apps-text-muted);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.app-meta span::before {
+  content: "• ";
+}
+
+.app-meta span:first-child::before {
+  content: "";
+}
+
+.app-salary {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: #4ade80;
+}
+
+/* right side */
+.app-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.app-dates {
+  font-size: 0.78rem;
+  color: var(--apps-text-muted);
+}
+
+.app-dates p {
+  margin: 0 0 3px;
+}
+
+.app-stage-note {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: #cbd5f5;
+}
+
+/* progress */
+.app-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.app-progress-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* timeline dots */
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #1e293b;
+  box-shadow: 0 0 0 1px rgba(30, 64, 175, 0.7);
+}
+
+.progress-dot.reached {
+  background: #2563eb;
+}
+
+/* status badges */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* keep existing color semantics, just adjusted for dark */
+
+/* Applied */
+.status-applied {
+  background: rgba(37, 99, 235, 0.2);
+  color: #bfdbfe;
+}
+
+/* In Review */
+.status-review {
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+}
+
+/* Shortlisted */
+.status-shortlisted {
+  background: rgba(34, 197, 94, 0.2);
+  color: #bbf7d0;
+}
+
+/* Interview */
+.status-interview {
+  background: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
+}
+
+/* Offer */
+.status-offer {
+  background: rgba(129, 140, 248, 0.2);
+  color: #c7d2fe;
+}
+
+/* Rejected */
+.status-rejected {
+  background: rgba(248, 113, 113, 0.25);
+  color: #fecaca;
+}
+
+/* Empty state */
+.apps-empty {
+  background: var(--apps-card-bg);
+  border-radius: var(--apps-radius-md);
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--apps-card-border);
+}
+
+.apps-empty h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: var(--apps-text-main);
+}
+
+.apps-empty p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--apps-text-muted);
+}
+
+/* view details button inside card */
+.app-view-btn {
+  font-size: 0.78rem;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+  .apps-page {
+    padding: 20px;
+    padding-left: calc(var(--snav-width, 260px) + 20px);
+  }
+}
+
+@media (max-width: 900px) {
+  .apps-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .apps-sort {
+    justify-content: flex-start;
+  }
+
+  .app-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .apps-page {
+    padding: 16px;
+    padding-left: 16px; /* sidenav overlays on mobile */
+  }
+
+  .apps-header {
+    padding: 14px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .apps-page {
+    padding: 12px;
+  }
+
+  .apps-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .apps-toolbar {
+    gap: 10px;
+  }
+}
+
+/* subtle scrollbars for long lists */
+.apps-list::-webkit-scrollbar {
+  width: 6px;
+}
+.apps-list::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 999px;
+}
