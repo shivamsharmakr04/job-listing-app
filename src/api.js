@@ -1,6 +1,21 @@
 // src/api.js — Centralised API client for Job Portal
 
-const BACKEND_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "";
+const DEFAULT_BACKEND_URL = "https://job-listing-app-uqx4.onrender.com";
+const LOCAL_BACKEND_URL = "http://localhost:5000";
+
+export function getBackendBase() {
+  const override = import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL;
+  if (override) return override.replace(/\/$/, "");
+
+  const hostname = window.location.hostname;
+  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") {
+    return LOCAL_BACKEND_URL;
+  }
+
+  return DEFAULT_BACKEND_URL;
+}
+
+const BACKEND_BASE = getBackendBase();
 const API_BASE = `${BACKEND_BASE}/api`;
 
 // ─── Token helper ──────────────────────────────────────────────

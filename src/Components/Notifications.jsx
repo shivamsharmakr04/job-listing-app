@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { getBackendBase } from "../api";
 
 export default function Notifications() {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    const backendBase = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "";
+    const backendBase = getBackendBase();
     fetch(`${backendBase}/api/notifications`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jb_token")}`,

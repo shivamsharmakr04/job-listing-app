@@ -7,6 +7,7 @@ import {
   apiUpdateStatus,
   apiGetJobs,
   apiDeleteJob,
+  getBackendBase,
 } from "../api";
 
 const STATUS_OPTIONS = ["Applied", "Reviewing", "Accepted", "Rejected"];
@@ -32,6 +33,7 @@ export default function AdminDashboard() {
   const [deletingId,   setDeletingId]   = useState(null);
   const [activeTab,    setActiveTab]    = useState("overview"); // overview | applications | jobs
   const [toastMsg,     setToastMsg]     = useState(null); // { type, text }
+  const backendBase = getBackendBase();
 
   // ─── Toast helper ──────────────────────────────────────────
   function toast(type, text) {
@@ -472,7 +474,7 @@ export default function AdminDashboard() {
                         </td>
                         <td>
                           {a.resumeUrl
-                            ? <a href={`${window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : ""}${a.resumeUrl}`} target="_blank"
+                            ? <a href={`${backendBase}${a.resumeUrl}`} target="_blank"
                                 rel="noreferrer" className="ad-resume-link">View ↗</a>
                             : <span style={{ color: "#475569", fontSize: "0.8rem" }}>—</span>
                           }

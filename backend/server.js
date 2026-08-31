@@ -18,8 +18,25 @@ dotenv.config({ path: path.join(__dirname, ".env") });
 const app = express();
 
 // ─── Middleware ────────────────────────────────────────────────
+const ALLOWED_ORIGINS = new Set([
+  "https://job-listing-app-uqx4.onrender.com",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+  ...(process.env.CORS_ORIGIN ? [process.env.CORS_ORIGIN] : []),
+  ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
+]);
+
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"],
+  origin: (origin, callback) => {
+    if (!origin || ALLOWED_ORIGINS.has(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -34,12 +51,18 @@ app.get("/", (_req, res) => {
 });
 
 // ─── MongoDB connection ────────────────────────────────────────
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected to:", process.env.MONGO_URI))
-  .catch((err) => {
-    console.error("❌ MongoDB connection failed:", err.message);
-  });
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  console.error("❌ Error: MONGO_URI environment variable is not defined.");
+  console.error("Please set MONGO_URI in your Render Environment Variables.");
+} else {
+  mongoose
+    .connect(mongoUri)
+    .then(() => console.log("✅ MongoDB connected successfully"))
+    .catch((err) => {
+      console.error("❌ MongoDB connection failed:", err.message);
+    });
+}
 
 // ─── Routes ────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);

@@ -17,7 +17,7 @@ import {
   faTachometerAlt,
   faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import "./SideNav.css";
+import "./Sidenav.css";
 
 export default function SideNav() {
   const navigate = useNavigate();

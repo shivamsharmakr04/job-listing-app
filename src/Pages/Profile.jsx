@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Profile.css";
-import { apiGetProfile, apiUpdateProfile, apiUploadResume, apiUploadAvatar } from "../api";
+import { apiGetProfile, apiUpdateProfile, apiUploadResume, apiUploadAvatar, getBackendBase } from "../api";
 
-const BACKEND_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "";
+const BACKEND_BASE = getBackendBase();
 
 const SECTIONS = [
   { id: "basic",      label: "Basic Details",    required: true },
