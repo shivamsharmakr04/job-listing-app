@@ -1,10 +1,12 @@
+/* ============================================================
+   SideNav.css — Fixed sidebar navigation
+   ============================================================ */
+
 :root {
-  /* default desktop width, real value is updated from Sidenav.jsx */
   --snav-width: 260px;
 }
 
-/* ========== MOBILE HAMBURGER BUTTON ========== */
-
+/* ─── Mobile hamburger ────────────────────────────────────── */
 .mobile-menu-btn {
   position: fixed;
   top: 12px;
@@ -21,29 +23,27 @@
   color: #f9fafb;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.4);
+  transition: background 0.2s;
 }
+.mobile-menu-btn:hover { background: #1e293b; }
 
-.mobile-menu-btn svg {
-  font-size: 1.1rem;
-}
-
-/* Dark overlay when mobile sidebar open */
+/* Mobile overlay */
 .mobile-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(2, 6, 23, 0.65);
   z-index: 105;
+  backdrop-filter: blur(2px);
 }
 
-/* ========== SIDENAV BASE ========== */
-
+/* ─── Sidenav base ────────────────────────────────────────── */
 .snav {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: var(--snav-width);
-  background: #0f172a;
+  background: #0a1628;
   color: #e5e7eb;
   display: flex;
   flex-direction: column;
@@ -51,222 +51,302 @@
   box-sizing: border-box;
   z-index: 120;
   transition:
-    width 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-  box-shadow: 2px 0 10px rgba(15, 23, 42, 0.35);
+    width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.28s ease;
+  box-shadow: 2px 0 20px rgba(2, 6, 23, 0.6);
+  border-right: 1px solid rgba(30, 58, 95, 0.5);
+  overflow: hidden;
 }
 
-/* collapsed (desktop) */
-.snav.collapsed {
-  width: 80px;
-}
+.snav.collapsed { width: 80px; }
 
-/* mobile mode: initial state is hidden off-screen (JS sets isMobile) */
 .snav.mobile {
   width: 260px;
   transform: translateX(-100%);
   box-shadow: none;
 }
 
-/* when mobile menu is open */
 .snav.mobile.mobile-open {
   transform: translateX(0);
-  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.45);
+  box-shadow: 4px 0 24px rgba(2, 6, 23, 0.8);
 }
 
-/* Brand / logo area */
+/* ─── Brand ───────────────────────────────────────────────── */
 .brand {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  padding: 0.5rem 0.4rem;
+  padding: 0.6rem 0.5rem;
   margin-bottom: 0.6rem;
   text-decoration: none;
   color: inherit;
+  border-radius: 0.75rem;
+  transition: background 0.2s;
 }
+.brand:hover { background: rgba(148, 163, 184, 0.05); }
 
 .logo {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4f46e5, #22c55e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #f9fafb;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #f1f5f9;
+}
+
+.subtitle {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+/* ─── Collapse toggle ─────────────────────────────────────── */
+.snav-toggle {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: 0.5rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+  font-size: 0.85rem;
+}
+.snav-toggle:hover {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+}
+
+/* ─── Nav list ────────────────────────────────────────────── */
+.nav-list {
+  margin-top: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.5rem;
+  margin: 0.05rem 0;
+  text-decoration: none;
+  color: #94a3b8;
   border-radius: 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nav-item .ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(148, 163, 184, 0.08);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.nav-item .nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: rgba(148, 163, 184, 0.08);
+  color: #e2e8f0;
+  transform: translateX(2px);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(34, 197, 94, 0.12));
+  color: #f9fafb;
+  border: 1px solid rgba(79, 70, 229, 0.3);
+}
+
+.nav-item.active .ico {
+  background: linear-gradient(135deg, #4f46e5, #22c55e);
+  color: white;
+}
+
+/* ─── Section divider ─────────────────────────────────────── */
+.nav-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 4px;
+  margin-top: 6px;
+}
+
+.nav-divider span {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #334155;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.nav-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(30, 58, 95, 0.8);
+}
+
+/* Collapsed version of divider */
+.nav-divider-dot {
+  margin: 8px auto 4px;
+  width: 28px;
+  height: 1px;
+  background: rgba(30, 58, 95, 0.8);
+}
+
+/* ─── User pill ───────────────────────────────────────────── */
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.45rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(30, 58, 95, 0.7);
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   background: linear-gradient(135deg, #4f46e5, #22c55e);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 0.9rem;
-  color: #f9fafb;
-}
-
-.title {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.1;
-}
-
-.subtitle {
-  font-size: 0.75rem;
-  color: #9ca3af;
-}
-
-/* Toggle button (desktop only) */
-.snav-toggle {
-  border: none;
-  background: transparent;
-  color: #9ca3af;
-  cursor: pointer;
-  margin-left: auto;
-  margin-right: 0.2rem;
-  margin-bottom: 0.4rem;
-  padding: 0.25rem;
-  border-radius: 999px;
-  transition: background 0.2s ease;
-}
-
-.snav-toggle:hover {
-  background: rgba(148, 163, 184, 0.25);
-}
-
-/* ========== NAV LIST ========== */
-
-.nav-list {
-  margin-top: 0.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-/* each item */
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.55rem 0.4rem;
-  margin: 0.05rem 0;
-  text-decoration: none;
-  color: #e5e7eb;
-  border-radius: 0.65rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease,
-    transform 0.12s ease;
-}
-
-.nav-item .ico {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(148, 163, 184, 0.18);
-  font-size: 0.85rem;
-}
-
-.nav-item .nav-label {
-  white-space: nowrap;
-}
-
-.nav-item:hover {
-  background: rgba(148, 163, 184, 0.14);
-  transform: translateY(-1px);
-}
-
-/* active route */
-.nav-item.active {
-  background: linear-gradient(135deg, #4f46e5, #22c55e);
-  color: #f9fafb;
-}
-
-.nav-item.active .ico {
-  background: rgba(15, 23, 42, 0.18);
-}
-
-/* ========== USER PILL ========== */
-
-.user-pill {
-  margin-top: 0.4rem;
-  padding: 0.55rem 0.4rem;
-  border-radius: 0.75rem;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background: #4f46e5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-right: 0.5rem;
+  color: white;
+  flex-shrink: 0;
 }
 
 .user-text {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
-  font-size: 0.8rem;
+  gap: 1px;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.user-pill {
-  display: flex;
-  align-items: center;
+.user-text strong {
+  font-size: 0.82rem;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Spacer pushes logout to bottom */
-.spacer {
-  flex: 1;
+.user-text small {
+  font-size: 0.7rem;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ========== LOGOUT / BOTTOM ========== */
+/* ─── Spacer ──────────────────────────────────────────────── */
+.spacer { flex: 1; }
 
+/* ─── Bottom actions ──────────────────────────────────────── */
 .bottom-actions {
-  padding-top: 0.45rem;
-  border-top: 1px solid rgba(55, 65, 81, 0.8);
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(30, 58, 95, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
+/* ─── Logout ──────────────────────────────────────────────── */
 .logout {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.45rem 0.4rem 0.3rem;
-  font-size: 0.9rem;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.875rem;
   color: #fca5a5;
   cursor: pointer;
-  border-radius: 0.65rem;
+  border-radius: 0.75rem;
   transition: background 0.18s ease;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .logout-ico {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.12);
+  font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
 .logout:hover {
-  background: rgba(248, 113, 113, 0.16);
+  background: rgba(248, 113, 113, 0.12);
 }
 
-/* ========== RESPONSIVE ========== */
-
+/* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* hide desktop toggle in mobile */
-  .snav-toggle {
-    display: none;
+  .snav-toggle { display: none; }
+
+  .brand { margin-top: 0.5rem; }
+
+  /* Collapsed nav-items show only icon, centred */
+  .snav.collapsed .nav-item {
+    justify-content: center;
+    padding: 0.55rem;
   }
 
-  .brand {
-    margin-top: 0.5rem;
+  .snav.collapsed .brand {
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .snav.collapsed .user-pill {
+    justify-content: center;
+  }
+
+  .snav.collapsed .logout {
+    justify-content: center;
+    padding: 0.5rem;
   }
 }

@@ -1,227 +1,326 @@
+/* ============================================================
+   Footer.css — Full-width footer that sits cleanly under
+   app-main content, with NO negative-margin hacks.
+   ============================================================ */
+
+/* ─── Main container ──────────────────────────────────────── */
 .app-footer {
-  margin-top: 24px;
-  padding: 20px 28px 18px;
-
-  /* ✅ Make footer shift with sidebar width */
-  margin-left: var(--snav-width, 260px);
-  transition: margin-left 0.25s ease;
-
-  background: radial-gradient(circle at top left, #1f2937 0, #020617 65%);
-  color: #e5e7eb;
-  border-top: 1px solid rgba(148, 163, 184, 0.4);
-  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.9);
-  animation: footerFadeIn 0.3s ease-out;
+  /* Explicit positioning: stay in normal flow but take viewport-aware width.
+     This is the most reliable way to make the footer sit to the right of
+     the fixed sidenav regardless of flex/margin/padding calculations. */
+  margin-top: 5rem;
+  background: linear-gradient(180deg, #0a0f1e 0%, #050a14 100%);
+  color: #94a3b8;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  position: relative;
 }
 
+/* ─── Animated gradient top bar ─────────────────────────── */
+.footer-gradient-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+  background-size: 200% 100%;
+  animation: gradientShift 4s linear infinite;
+}
 
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ─── Background glow blobs ──────────────────────────────── */
+.app-footer::before,
+.app-footer::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.app-footer::before {
+  width: 400px;
+  height: 400px;
+  background: rgba(59, 130, 246, 0.06);
+  top: -100px;
+  left: 0;
+}
+.app-footer::after {
+  width: 300px;
+  height: 300px;
+  background: rgba(139, 92, 246, 0.05);
+  bottom: -80px;
+  right: 80px;
+}
+
+/* ─── Inner grid ────────────────────────────────────────────────── */
 .footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  /* 32px left matches the page content left padding, so brand column
+     starts at the same indentation as all page headings */
+  padding: 3rem 2rem 2.5rem 2rem;
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: 20px;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2.5rem;
+  box-sizing: border-box;
 }
 
-/* Brand column */
-
+/* ─── Columns ────────────────────────────────────────────── */
 .footer-col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 1.2rem;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: colFadeIn 0.6s ease forwards;
+}
+.footer-col:nth-child(1) { animation-delay: 0.05s; }
+.footer-col:nth-child(2) { animation-delay: 0.15s; }
+.footer-col:nth-child(3) { animation-delay: 0.25s; }
+
+@keyframes colFadeIn {
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.footer-logo {
+/* ─── Brand ──────────────────────────────────────────────── */
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-logo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.footer-logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footer-tagline {
-  margin: 4px 0 10px;
-  font-size: 0.86rem;
-  color: #9ca3af;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #64748b;
+  max-width: 320px;
 }
 
-/* Social row */
-
+/* ─── Social links ───────────────────────────────────────── */
 .footer-social-row {
   display: flex;
+  gap: 0.6rem;
   flex-wrap: wrap;
-  gap: 8px;
 }
 
 .footer-social-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  border-radius: 999px;
-  padding: 6px 12px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
-  font-size: 0.8rem;
-  cursor: pointer;
+  gap: 6px;
   text-decoration: none;
-  color: #e5e7eb;
-  background: rgba(15, 23, 42, 0.8);
-  transition: transform 0.15s ease, box-shadow 0.2s ease,
-    border-color 0.2s ease, background 0.2s ease;
-}
-
-.footer-social-icon {
-  width: 22px;
-  height: 22px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 7px 14px;
   border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-}
-
-/* Brand-like colors similar to your signup social icons */
-
-.footer-social-link.linkedin .footer-social-icon {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-.footer-social-link.twitter .footer-social-icon {
-  background: #e0f2fe;
-  color: #0ea5e9;
-}
-
-.footer-social-link.instagram .footer-social-icon {
-  background: #fce7f3;
-  color: #db2777;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.25s ease;
 }
 
 .footer-social-link:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.8);
-  border-color: #60a5fa;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Links column */
+.footer-social-icon { font-size: 0.78rem; }
+.linkedin:hover  { border-color: #0a66c2; color: #0a66c2; }
+.twitter:hover   { border-color: #e2e8f0; color: #e2e8f0; }
+.github:hover    { border-color: #a78bfa; color: #a78bfa; }
 
+/* ─── Headings ───────────────────────────────────────────── */
 .footer-heading {
-  margin: 0 0 4px;
+  color: #f1f5f9;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* ─── Quick links ────────────────────────────────────────── */
 .footer-links {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .footer-link {
-  font-size: 0.85rem;
-  color: #9ca3af;
   text-decoration: none;
-  position: relative;
-  padding-bottom: 2px;
-  transition: color 0.15s ease, transform 0.1s ease;
-}
-
-.footer-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1px;
-  background: #60a5fa;
-  transition: width 0.2s ease;
+  color: #64748b;
+  font-size: 0.87rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
 }
 
 .footer-link:hover {
-  color: #e5e7eb;
-  transform: translateX(2px);
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
 }
 
-.footer-link:hover::after {
-  width: 100%;
-}
+.footer-link.active { color: #38bdf8; }
 
-.footer-link.active {
-  color: #bfdbfe;
-}
-
-/* Support column */
-
+/* ─── Support text ───────────────────────────────────────── */
 .footer-text {
-  font-size: 0.82rem;
-  color: #9ca3af;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: #64748b;
 }
 
+/* ─── List ───────────────────────────────────────────────── */
 .footer-list {
   list-style: none;
-  margin: 0;
   padding: 0;
-  font-size: 0.8rem;
-  color: #e5e7eb;
-}
-
-.footer-list li + li {
-  margin-top: 3px;
-  opacity: 0.9;
-}
-
-/* Bottom strip */
-
-.footer-bottom {
-  max-width: 1200px;
-  margin: 12px auto 0;
-  padding-top: 10px;
-  border-top: 1px solid rgba(55, 65, 81, 0.9);
+  margin: 0;
   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-list li { font-size: 0.87rem; }
+
+.footer-list-link {
+  color: #64748b;
+  text-decoration: none;
+  display: inline-block;
+  padding: 3px 0;
+  transition: color 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+
+.footer-list-link:hover {
+  color: #38bdf8;
+  transform: translateX(4px);
+}
+
+/* ─── CTA button ─────────────────────────────────────────── */
+.footer-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.footer-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.5);
+}
+
+/* ─── Bottom bar ─────────────────────────────────────────── */
+.footer-bottom {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 1.2rem 2.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  font-size: 0.78rem;
-  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: #475569;
+  box-sizing: border-box;
 }
 
-.footer-bottom-right {
-  text-align: right;
+.footer-bottom strong { color: #64748b; }
+
+.footer-bottom-badges { display: flex; gap: 8px; }
+
+.footer-badge {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #475569;
 }
 
-/* Animation */
+.footer-bottom-right { color: #475569; }
 
-@keyframes footerFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
-
-@media (max-width: 900px) {
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
   .footer-inner {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-col.footer-brand {
+    grid-column: span 2;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+  /* On mobile the sidenav overlays the content,
+     so app-main starts at left: 0. Footer just fills it. */
   .app-footer {
-    padding: 18px 16px 14px;
+    margin-top: 3rem;
   }
 
   .footer-inner {
     grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2.5rem 1.5rem 2rem;
   }
+
+  .footer-col.footer-brand {
+    grid-column: span 1;
+  }
+
+  .footer-tagline { max-width: 100%; }
 
   .footer-bottom {
     flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
+    align-items: center;
   }
+}
 
-  .footer-bottom-right {
-    text-align: left;
-  }
+@media (max-width: 480px) {
+  .footer-social-row { flex-wrap: wrap; }
+  .footer-bottom-badges { justify-content: center; }
 }

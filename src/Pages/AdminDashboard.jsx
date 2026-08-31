@@ -1,6 +1,6 @@
-// src/Pages/AdminDashboard.jsx
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ added this
+// src/Pages/AdminDashboard.jsx — Fully functional employer dashboard
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 import {
   apiEmployerApplications,
@@ -9,51 +9,37 @@ import {
   apiDeleteJob,
 } from "../api";
 
+const STATUS_OPTIONS = ["Applied", "Reviewing", "Accepted", "Rejected"];
+const STATUS_COLORS  = {
+  Applied:   { bg: "rgba(59,130,246,0.15)",  color: "#60a5fa" },
+  Reviewing: { bg: "rgba(245,158,11,0.15)", color: "#fbbf24" },
+  Accepted:  { bg: "rgba(34,197,94,0.15)",  color: "#4ade80" },
+  Rejected:  { bg: "rgba(239,68,68,0.15)",  color: "#f87171" },
+};
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
-  // when admin clicks "Edit" on a job card
-  function handleEditJob(jobId) {
-    // find full job object from jobs[] loaded from backend
-    const job = jobs.find((j) => (j._id || j.id) === jobId);
-    if (!job) return;
-
-    // store for JobPost page to read
-    try {
-      localStorage.setItem("jb_edit_job", JSON.stringify(job));
-    } catch (e) {
-      console.error("Failed to cache job for edit:", e);
-    }
-
-    // go to Job Post page (same UI, but pre-filled)
-    navigate("/post");
-  }
-
-  // when admin clicks "Delete" on a job card
-  async function handleDeleteJob(jobId) {
-    if (!window.confirm("Delete this job permanently?")) return;
-
-    try {
-      await apiDeleteJob(jobId);
-      // remove from local state so UI updates in real-time
-      setJobs((prev) => prev.filter((j) => (j._id || j.id) !== jobId));
-      alert("✅ Job deleted");
-    } catch (err) {
-      console.error(err);
-      alert("❌ Failed to delete job");
-    }
-  }
-
-  const [user, setUser] = useState(null);
-  const [apps, setApps] = useState([]);
-  const [jobs, setJobs] = useState([]);
+  // ─── State ─────────────────────────────────────────────────
+  const [user,         setUser]         = useState(null);
+  const [apps,         setApps]         = useState([]);
+  const [jobs,         setJobs]         = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
-  const [jobFilter, setJobFilter] = useState("All");
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState(null);
+  const [jobFilter,    setJobFilter]    = useState("All");
+  const [search,       setSearch]       = useState("");
+  const [loading,      setLoading]      = useState(true);
+  const [updatingId,   setUpdatingId]   = useState(null);
+  const [deletingId,   setDeletingId]   = useState(null);
+  const [activeTab,    setActiveTab]    = useState("overview"); // overview | applications | jobs
+  const [toastMsg,     setToastMsg]     = useState(null); // { type, text }
 
-  // load admin info
+  // ─── Toast helper ──────────────────────────────────────────
+  function toast(type, text) {
+    setToastMsg({ type, text });
+    setTimeout(() => setToastMsg(null), 3500);
+  }
+
+  // ─── Load user from localStorage ──────────────────────────
   useEffect(() => {
     try {
       const raw = localStorage.getItem("jb_user");
@@ -63,375 +49,433 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // load applications & jobs from backend
-  useEffect(() => {
-    async function load() {
-      try {
-        const [appsData, jobsData] = await Promise.all([
-          apiEmployerApplications().catch(() => []),
-          apiGetJobs().catch(() => []),
-        ]);
-
-        if (Array.isArray(appsData)) setApps(appsData);
-        if (Array.isArray(jobsData)) setJobs(jobsData);
-      } finally {
-        setLoading(false);
-      }
+  // ─── Load data from backend ────────────────────────────────
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [appsData, jobsData] = await Promise.all([
+        apiEmployerApplications().catch(() => []),
+        apiGetJobs().catch(() => []),
+      ]);
+      if (Array.isArray(appsData)) setApps(appsData);
+      if (Array.isArray(jobsData)) setJobs(jobsData);
+    } finally {
+      setLoading(false);
     }
-
-    load();
   }, []);
 
-  // aggregate stats
-  const totals = useMemo(() => {
-    const totalApplications = apps.length;
-    const pending = apps.filter((a) =>
-      (a.status || "").toLowerCase().includes("pending")
-    ).length;
-    const shortlisted = apps.filter((a) =>
-      (a.status || "").toLowerCase().includes("shortlisted")
-    ).length;
-    const hired = apps.filter((a) =>
-      (a.status || "").toLowerCase().includes("hired")
-    ).length;
+  useEffect(() => { loadData(); }, [loadData]);
 
-    const openJobs = jobs.length;
+  // ─── Aggregate stats ───────────────────────────────────────
+  const stats = useMemo(() => ({
+    total:       apps.length,
+    applied:     apps.filter(a => (a.status||"").toLowerCase() === "applied").length,
+    reviewing:   apps.filter(a => (a.status||"").toLowerCase() === "reviewing").length,
+    accepted:    apps.filter(a => (a.status||"").toLowerCase() === "accepted").length,
+    rejected:    apps.filter(a => (a.status||"").toLowerCase() === "rejected").length,
+    openJobs:    jobs.filter(j => (j.status||"active") === "active").length,
+    totalJobs:   jobs.length,
+  }), [apps, jobs]);
 
-    return { totalApplications, pending, shortlisted, hired, openJobs };
-  }, [apps, jobs]);
-
-  // jobs with application counts (from employer applications)
-  const jobWithCounts = useMemo(() => {
+  // ─── Job+counts map ────────────────────────────────────────
+  const jobsWithCounts = useMemo(() => {
     const map = new Map();
-
-    apps.forEach((app) => {
-      const id =
-        app.job?._id || app.jobId || app.job_id || app.job?.id || "unknown";
-
-      const base = map.get(id) || {
+    apps.forEach(app => {
+      const id = app.job?._id || app.job?.id || "unknown";
+      const entry = map.get(id) || {
         id,
-        title: app.job?.title || app.jobTitle || "Job",
-        company: app.job?.company || app.company || "Company",
-        location: app.job?.location || app.location || "",
-        type: app.job?.type || app.type || "",
-        status: app.job?.status || "Open",
+        _id: id,
+        title:    app.job?.title    || "Job",
+        company:  app.job?.company  || "Company",
+        location: app.job?.location || "",
+        type:     app.job?.type     || "",
+        mode:     app.job?.mode     || "",
+        status:   app.job?.status   || "active",
         count: 0,
       };
-
-      base.count += 1;
-      map.set(id, base);
+      entry.count++;
+      map.set(id, entry);
     });
-
-    // also include jobs with zero applications yet
-    jobs.forEach((job) => {
+    jobs.forEach(job => {
       const id = job._id || job.id;
-      if (!id) return;
-      if (map.has(id)) return;
-
+      if (!id || map.has(id)) return;
       map.set(id, {
-        id,
-        title: job.title || job.jobTitle || "Job",
-        company: job.company || job.companyName || "Company",
+        id, _id: id,
+        title:    job.title    || "Job",
+        company:  job.company  || "Company",
         location: job.location || "",
-        type: job.type || job.jobType || "",
-        status: job.status || "Open",
+        type:     job.type     || "",
+        mode:     job.mode     || "",
+        status:   job.status   || "active",
         count: 0,
       });
     });
-
     return Array.from(map.values());
   }, [apps, jobs]);
 
-  // flatten applications for table
-  const displayApps = useMemo(
-    () =>
-      apps.map((a) => {
-        const created =
-          a.createdAt && !Number.isNaN(Date.parse(a.createdAt))
-            ? new Date(a.createdAt)
-            : null;
-        const updated =
-          a.updatedAt && !Number.isNaN(Date.parse(a.updatedAt))
-            ? new Date(a.updatedAt)
-            : created;
+  // ─── Filtered applications for table ──────────────────────
+  const displayApps = useMemo(() => apps.map(a => ({
+    id:             a._id || a.id,
+    jobTitle:       a.job?.title     || "Job",
+    company:        a.job?.company   || "Company",
+    candidate:      a.applicant?.name  || "Candidate",
+    candidateEmail: a.applicant?.email || "N/A",
+    candidatePhone: a.applicant?.phone || "",
+    resumeUrl:      a.applicant?.resumeUrl || "",
+    coverLetter:    a.coverLetter || "",
+    status:         a.status || "Applied",
+    created:        a.createdAt ? new Date(a.createdAt) : null,
+    updated:        a.updatedAt ? new Date(a.updatedAt) : null,
+  })), [apps]);
 
-        return {
-          id: a._id || a.id,
-          jobTitle: a.job?.title || a.jobTitle || "Job",
-          company: a.job?.company || a.company || "Company",
-          candidate:
-            a.candidate?.name ||
-            a.applicantName ||
-            a.candidateName ||
-            "Candidate",
-          candidateEmail:
-            a.candidate?.email || a.applicantEmail || a.email || "N/A",
-          status: a.status || "Pending",
-          created,
-          updated,
-        };
-      }),
-    [apps]
-  );
+  const filteredApps = useMemo(() => displayApps.filter(a => {
+    const matchStatus = statusFilter === "All" || a.status.toLowerCase() === statusFilter.toLowerCase();
+    const matchJob    = jobFilter === "All" || a.jobTitle.toLowerCase() === jobFilter.toLowerCase();
+    const text        = (a.jobTitle + a.company + a.candidate + a.candidateEmail).toLowerCase();
+    return matchStatus && matchJob && text.includes(search.toLowerCase());
+  }), [displayApps, statusFilter, jobFilter, search]);
 
-  const filteredApps = useMemo(
-    () =>
-      displayApps.filter((a) => {
-        const matchesStatus =
-          statusFilter === "All" ||
-          a.status.toLowerCase() === statusFilter.toLowerCase();
-
-        const matchesJob =
-          jobFilter === "All" ||
-          a.jobTitle.toLowerCase() === jobFilter.toLowerCase();
-
-        const text = (
-          a.jobTitle +
-          a.company +
-          a.candidate +
-          a.candidateEmail
-        ).toLowerCase();
-        const matchesSearch = text.includes(search.toLowerCase());
-
-        return matchesStatus && matchesJob && matchesSearch;
-      }),
-    [displayApps, statusFilter, jobFilter, search]
-  );
-
+  // ─── Status change ─────────────────────────────────────────
   async function handleStatusChange(id, newStatus) {
+    setUpdatingId(id);
     try {
-      setUpdatingId(id);
       await apiUpdateStatus(id, newStatus);
-
-      setApps((prev) =>
-        prev.map((a) =>
-          (a._id || a.id) === id ? { ...a, status: newStatus } : a
-        )
-      );
-      alert(`✅ Status updated to "${newStatus}"`);
+      setApps(prev => prev.map(a => (a._id || a.id) === id ? { ...a, status: newStatus } : a));
+      toast("success", `✅ Status updated to "${newStatus}"`);
     } catch (err) {
-      console.error(err);
-      alert("❌ Failed to update status");
+      toast("error", `❌ Update failed: ${err.message}`);
     } finally {
       setUpdatingId(null);
     }
   }
 
-  const adminName =
-    user?.name || (user?.email ? user.email.split("@")[0] : "Admin");
+  // ─── Delete job ────────────────────────────────────────────
+  async function handleDeleteJob(jobId, jobTitle) {
+    if (!window.confirm(`Delete job "${jobTitle}"? This will also remove all its applications.`)) return;
+    setDeletingId(jobId);
+    try {
+      await apiDeleteJob(jobId);
+      setJobs(prev => prev.filter(j => (j._id || j.id) !== jobId));
+      setApps(prev => prev.filter(a => (a.job?._id || a.job?.id) !== jobId));
+      toast("success", `✅ Job "${jobTitle}" deleted.`);
+    } catch (err) {
+      toast("error", `❌ Delete failed: ${err.message}`);
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  const adminName    = user?.name || (user?.email ? user.email.split("@")[0] : "Admin");
   const adminInitial = adminName.charAt(0).toUpperCase();
+
+  // ─── Mini bar-chart data ───────────────────────────────────
+  const chartMax  = Math.max(stats.applied, stats.reviewing, stats.accepted, stats.rejected, 1);
+  const chartData = [
+    { label: "Applied",   value: stats.applied,   color: "#60a5fa" },
+    { label: "Reviewing", value: stats.reviewing,  color: "#fbbf24" },
+    { label: "Accepted",  value: stats.accepted,   color: "#4ade80" },
+    { label: "Rejected",  value: stats.rejected,   color: "#f87171" },
+  ];
 
   return (
     <div className="admin-dashboard">
-      {/* HEADER */}
+
+      {/* ─── TOAST ─────────────────────────────────────────── */}
+      {toastMsg && (
+        <div className={`ad-toast ${toastMsg.type}`}>{toastMsg.text}</div>
+      )}
+
+      {/* ─── HEADER ────────────────────────────────────────── */}
       <header className="ad-header">
         <div>
-          <p className="ad-welcome">
-            Welcome back, <span>{adminName}</span> 👋
-          </p>
+          <p className="ad-welcome">Welcome back, <span>{adminName}</span> 👋</p>
           <h1>Admin Dashboard</h1>
           <p className="ad-subtext">
-            Monitor your job postings, applications and hiring pipeline in
-            real-time.
+            Manage job postings, review applications, and track your hiring pipeline.
           </p>
         </div>
-
-        <div className="ad-user-pill">
-          <div className="ad-avatar">{adminInitial}</div>
-          <div>
-            <p className="ad-user-name">{adminName}</p>
-            <p className="ad-user-role">Admin • Employer</p>
+        <div className="ad-header-right">
+          <div className="ad-user-pill">
+            <div className="ad-avatar">{adminInitial}</div>
+            <div>
+              <p className="ad-user-name">{adminName}</p>
+              <p className="ad-user-role">Admin • Employer</p>
+            </div>
+          </div>
+          <div className="ad-header-actions">
+            <button className="ad-btn ad-btn-primary" onClick={() => navigate("/post")}>
+              + Post Job
+            </button>
+            <button className="ad-btn ad-btn-outline" onClick={loadData} disabled={loading}>
+              {loading ? "⟳" : "↻"} Refresh
+            </button>
           </div>
         </div>
       </header>
 
-      {/* STATS */}
+      {/* ─── STAT CARDS ────────────────────────────────────── */}
       <section className="ad-stats">
-        <div className="ad-stat-card">
-          <p className="ad-stat-label">Total applications</p>
-          <h2>{totals.totalApplications}</h2>
-          <p className="ad-stat-footer">Across all your job postings</p>
-        </div>
-
-        <div className="ad-stat-card">
-          <p className="ad-stat-label">Open roles</p>
-          <h2>{totals.openJobs}</h2>
-          <p className="ad-stat-footer">Currently active job vacancies</p>
-        </div>
-
-        <div className="ad-stat-card">
-          <p className="ad-stat-label">Shortlisted</p>
-          <h2>{totals.shortlisted}</h2>
-          <p className="ad-stat-footer">Candidates moved to next stage</p>
-        </div>
-
-        <div className="ad-stat-card">
-          <p className="ad-stat-label">Hired</p>
-          <h2>{totals.hired}</h2>
-          <p className="ad-stat-footer">Successfully hired through portal</p>
-        </div>
-      </section>
-
-      {/* FILTERS */}
-      <section className="ad-filters">
-        <div className="ad-filter-group">
-          <label>Filter by job</label>
-          <select
-            value={jobFilter}
-            onChange={(e) => setJobFilter(e.target.value)}
-          >
-            <option value="All">All jobs</option>
-            {jobWithCounts.map((j) => (
-              <option key={j.id} value={j.title}>
-                {j.title}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="ad-filter-group">
-          <label>Application status</label>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Shortlisted">Shortlisted</option>
-            <option value="Interview">Interview</option>
-            <option value="Hired">Hired</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-        </div>
-
-        <div className="ad-filter-group">
-          <label>Search</label>
-          <div className="ad-quick-btns">
-           <input
-  type="text"
-  placeholder="Search by job, candidate or email"
-  style={{
-    flex: 1,
-    padding: "0.45rem 0.6rem",
-    borderRadius: "0.6rem",
-    border: "1px solid #d4d4d4",   // ✅ fixed: single string
-    fontSize: "0.85rem",
-  }}
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
+        {[
+          { label: "Total Applications", value: stats.total,     footer: "Across all your postings", icon: "📋", color: "#60a5fa" },
+          { label: "Open Roles",         value: stats.openJobs,  footer: `${stats.totalJobs} total postings`, icon: "💼", color: "#4ade80" },
+          { label: "Reviewing",          value: stats.reviewing, footer: "Being actively considered", icon: "🔍", color: "#fbbf24" },
+          { label: "Accepted",           value: stats.accepted,  footer: "Successful hires this period", icon: "✅", color: "#34d399" },
+        ].map(card => (
+          <div key={card.label} className="ad-stat-card" style={{ "--card-accent": card.color }}>
+            <div className="ad-stat-icon">{card.icon}</div>
+            <div>
+              <p className="ad-stat-label">{card.label}</p>
+              <h2 style={{ color: card.color }}>{card.value}</h2>
+              <p className="ad-stat-footer">{card.footer}</p>
+            </div>
           </div>
-        </div>
+        ))}
       </section>
 
-      {/* MAIN LAYOUT */}
-      <section className="ad-main-layout">
-        {/* LEFT COLUMN */}
-        <div className="ad-column">
-          {/* JOBS OVERVIEW */}
+      {/* ─── TAB NAV ───────────────────────────────────────── */}
+      <nav className="ad-tab-nav">
+        {[
+          { id: "overview",     label: "📊 Overview" },
+          { id: "applications", label: "📋 Applications" },
+          { id: "jobs",         label: "💼 My Jobs" },
+        ].map(tab => (
+          <button key={tab.id}
+            className={`ad-tab-btn ${activeTab === tab.id ? "active" : ""}`}
+            onClick={() => setActiveTab(tab.id)}>
+            {tab.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* ══════════════════════════════════════════════════════
+          TAB: OVERVIEW
+          ══════════════════════════════════════════════════ */}
+      {activeTab === "overview" && (
+        <section className="ad-main-layout">
+
+          {/* Application Status Chart */}
           <div className="ad-panel">
             <div className="ad-panel-header">
-              <h2>Your job postings</h2>
-              <span>{jobWithCounts.length} roles</span>
+              <h2>Application Pipeline</h2>
+              <span>{stats.total} total</span>
             </div>
-
-            <div className="ad-job-list">
-              {jobWithCounts.map((job) => (
-                <div key={job.id} className="ad-job-card">
-                  <div>
-                    <h3>{job.title}</h3>
-                    <p className="ad-job-meta">
-                      {job.company}
-                      {job.location && <> • {job.location}</>}
-                      {job.type && <> • {job.type}</>}
-                    </p>
-                    <p className="ad-job-apps">
-                      {job.count} application{job.count === 1 ? "" : "s"}
-                    </p>
+            <div className="ad-chart">
+              {chartData.map(bar => (
+                <div key={bar.label} className="ad-chart-row">
+                  <span className="ad-chart-label">{bar.label}</span>
+                  <div className="ad-chart-track">
+                    <div className="ad-chart-bar"
+                      style={{
+                        width: `${chartMax > 0 ? (bar.value / chartMax) * 100 : 0}%`,
+                        background: bar.color,
+                      }} />
                   </div>
-
-                  <div className="ad-job-right">
-                    <span
-                      className={
-                        "ad-badge " +
-                        (job.status === "Closed" ? "ad-closed" : "ad-open")
-                      }
-                    >
-                      {job.status || "Open"}
-                    </span>
-                    <button
-                      type="button"
-                      className="ad-btn ad-btn-outline ad-small-btn"
-                      onClick={() => {
-                        setJobFilter(job.title);
-                      }}
-                    >
-                      View applications
-                    </button>
-                  </div>
+                  <span className="ad-chart-val" style={{ color: bar.color }}>{bar.value}</span>
                 </div>
               ))}
-
-              {!jobWithCounts.length && (
-                <p style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-                  No job postings found. Create a job from the “Job Post” page.
-                </p>
-              )}
             </div>
           </div>
 
-          {/* APPLICATION TABLE */}
+          {/* Recent Applications */}
           <div className="ad-panel">
             <div className="ad-panel-header">
-              <h2>Recent applications</h2>
-              <span>{filteredApps.length} visible</span>
+              <h2>Recent Applications</h2>
+              <button className="ad-tab-link" onClick={() => setActiveTab("applications")}>
+                View all →
+              </button>
+            </div>
+            {loading ? (
+              <div className="ad-loading"><div className="ad-spinner" />Loading…</div>
+            ) : displayApps.length === 0 ? (
+              <p className="ad-empty">No applications yet. Share your job postings to attract candidates.</p>
+            ) : (
+              <div className="ad-recent-list">
+                {displayApps.slice(0, 5).map(a => (
+                  <div key={a.id} className="ad-recent-item">
+                    <div className="ad-candidate-avatar">{(a.candidate || "?").charAt(0).toUpperCase()}</div>
+                    <div className="ad-recent-info">
+                      <p className="ad-recent-name">{a.candidate}</p>
+                      <p className="ad-recent-job">{a.jobTitle} · {a.company}</p>
+                    </div>
+                    <div>
+                      <span className="ad-status-pill" style={STATUS_COLORS[a.status] || {}}>
+                        {a.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Jobs overview */}
+          <div className="ad-panel">
+            <div className="ad-panel-header">
+              <h2>Your Job Postings</h2>
+              <button className="ad-tab-link" onClick={() => setActiveTab("jobs")}>View all →</button>
+            </div>
+            {jobsWithCounts.slice(0, 4).map(job => (
+              <div key={job.id} className="ad-job-card">
+                <div>
+                  <h3>{job.title}</h3>
+                  <p className="ad-job-meta">
+                    {job.company}{job.location && ` • ${job.location}`}{job.type && ` • ${job.type}`}
+                  </p>
+                  <p className="ad-job-apps">{job.count} application{job.count !== 1 ? "s" : ""}</p>
+                </div>
+                <div className="ad-job-right">
+                  <span className={`ad-badge ${job.status === "closed" ? "ad-closed" : "ad-open"}`}>
+                    {job.status === "closed" ? "Closed" : "Open"}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {jobsWithCounts.length === 0 && (
+              <p className="ad-empty">No jobs posted yet.</p>
+            )}
+          </div>
+
+          {/* Quick actions sidebar */}
+          <div className="ad-panel">
+            <div className="ad-panel-header"><h2>Quick Actions</h2></div>
+            <div className="ad-quick-actions">
+              <button className="ad-quick-btn" onClick={() => navigate("/post")}>
+                <span>📝</span>
+                <div>
+                  <strong>Post a New Job</strong>
+                  <small>Create a new job listing</small>
+                </div>
+              </button>
+              <button className="ad-quick-btn" onClick={() => setActiveTab("applications")}>
+                <span>👥</span>
+                <div>
+                  <strong>Review Applications</strong>
+                  <small>{stats.reviewing} pending review</small>
+                </div>
+              </button>
+              <button className="ad-quick-btn" onClick={() => setActiveTab("jobs")}>
+                <span>💼</span>
+                <div>
+                  <strong>Manage Jobs</strong>
+                  <small>{stats.openJobs} active roles</small>
+                </div>
+              </button>
+              <button className="ad-quick-btn" onClick={loadData}>
+                <span>🔄</span>
+                <div>
+                  <strong>Refresh Data</strong>
+                  <small>Sync latest from server</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+          TAB: APPLICATIONS
+          ══════════════════════════════════════════════════ */}
+      {activeTab === "applications" && (
+        <section className="ad-applications-tab">
+
+          {/* Filters */}
+          <div className="ad-filters">
+            <div className="ad-filter-group">
+              <label>Filter by job</label>
+              <select value={jobFilter} onChange={e => setJobFilter(e.target.value)}>
+                <option value="All">All jobs</option>
+                {jobsWithCounts.map(j => (
+                  <option key={j.id} value={j.title}>{j.title}</option>
+                ))}
+              </select>
+            </div>
+            <div className="ad-filter-group">
+              <label>Status</label>
+              <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+                <option value="All">All statuses</option>
+                {STATUS_OPTIONS.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            <div className="ad-filter-group" style={{ flex: 2 }}>
+              <label>Search candidates</label>
+              <input type="text" placeholder="Search by name, email, job title…"
+                value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="ad-panel" style={{ marginTop: "1rem" }}>
+            <div className="ad-panel-header">
+              <h2>Applications</h2>
+              <span>{filteredApps.length} result{filteredApps.length !== 1 ? "s" : ""}</span>
             </div>
 
             {loading ? (
-              <p>Loading applications...</p>
+              <div className="ad-loading"><div className="ad-spinner" />Loading applications…</div>
             ) : filteredApps.length === 0 ? (
-              <p style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-                No applications found for the selected filters.
-              </p>
+              <p className="ad-empty">No applications match your filters.</p>
             ) : (
               <div className="ad-table-wrapper">
                 <table className="ad-table">
                   <thead>
                     <tr>
-                      <th>Job</th>
                       <th>Candidate</th>
                       <th>Email</th>
+                      <th>Job</th>
+                      <th>Applied</th>
                       <th>Status</th>
-                      <th>Last update</th>
+                      <th>Cover Letter</th>
+                      <th>Resume</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredApps.map((a) => (
+                    {filteredApps.map(a => (
                       <tr key={a.id}>
-                        <td>{a.jobTitle}</td>
-                        <td>{a.candidate}</td>
-                        <td>{a.candidateEmail}</td>
+                        <td>
+                          <div className="ad-candidate-row">
+                            <div className="ad-candidate-avatar sm">
+                              {(a.candidate || "?").charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <strong>{a.candidate}</strong>
+                              {a.candidatePhone && <small style={{ display: "block", color: "#64748b" }}>{a.candidatePhone}</small>}
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ fontSize: "0.82rem", color: "#94a3b8" }}>{a.candidateEmail}</td>
+                        <td>
+                          <span style={{ fontWeight: 500 }}>{a.jobTitle}</span>
+                          <small style={{ display: "block", color: "#64748b" }}>{a.company}</small>
+                        </td>
+                        <td style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                          {a.created ? a.created.toLocaleDateString() : "—"}
+                        </td>
                         <td>
                           <select
+                            className="ad-status-select"
                             value={a.status}
                             disabled={updatingId === a.id}
-                            onChange={(e) =>
-                              handleStatusChange(a.id, e.target.value)
-                            }
+                            onChange={e => handleStatusChange(a.id, e.target.value)}
+                            style={STATUS_COLORS[a.status] || {}}
                           >
-                            <option value="Pending">Pending</option>
-                            <option value="Shortlisted">Shortlisted</option>
-                            <option value="Interview">Interview</option>
-                            <option value="Hired">Hired</option>
-                            <option value="Rejected">Rejected</option>
+                            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                           </select>
                         </td>
                         <td>
-                          {a.updated
-                            ? a.updated.toLocaleDateString()
-                            : a.created
-                            ? a.created.toLocaleDateString()
-                            : "—"}
+                          {a.coverLetter
+                            ? <span className="ad-cover-preview" title={a.coverLetter}>
+                                {a.coverLetter.slice(0, 40)}{a.coverLetter.length > 40 ? "…" : ""}
+                              </span>
+                            : <span style={{ color: "#475569", fontSize: "0.8rem" }}>—</span>
+                          }
+                        </td>
+                        <td>
+                          {a.resumeUrl
+                            ? <a href={`http://localhost:5000${a.resumeUrl}`} target="_blank"
+                                rel="noreferrer" className="ad-resume-link">View ↗</a>
+                            : <span style={{ color: "#475569", fontSize: "0.8rem" }}>—</span>
+                          }
                         </td>
                       </tr>
                     ))}
@@ -440,82 +484,91 @@ export default function AdminDashboard() {
               </div>
             )}
           </div>
-        </div>
+        </section>
+      )}
 
-        {/* RIGHT COLUMN */}
-        <aside className="ad-column">
-          {/* SIMPLE TEAM PANEL (UI + small animation, static demo data) */}
-          <div className="ad-panel">
-            <div className="ad-panel-header">
-              <h2>Hiring team (demo)</h2>
-              <span>3 members</span>
-            </div>
-
-            <ul className="ad-employee-list">
-              <li className="ad-employee-item">
-                <div className="ad-employee-avatar">K</div>
-                <div className="ad-employee-info">
-                  <span>Kumar Satyam</span>
-                  <small>Recruiter • Tech roles</small>
-                </div>
-              </li>
-              <li className="ad-employee-item">
-                <div className="ad-employee-avatar">A</div>
-                <div className="ad-employee-info">
-                  <span>Anjali Verma</span>
-                  <small>HR Manager</small>
-                </div>
-              </li>
-              <li className="ad-employee-item">
-                <div className="ad-employee-avatar">R</div>
-                <div className="ad-employee-info">
-                  <span>Rahul Singh</span>
-                  <small>Engineering Lead</small>
-                </div>
-              </li>
-            </ul>
+      {/* ══════════════════════════════════════════════════════
+          TAB: JOBS
+          ══════════════════════════════════════════════════ */}
+      {activeTab === "jobs" && (
+        <section className="ad-jobs-tab">
+          <div className="ad-jobs-tab-header">
+            <h2>{jobsWithCounts.length} Job Posting{jobsWithCounts.length !== 1 ? "s" : ""}</h2>
+            <button className="ad-btn ad-btn-primary" onClick={() => navigate("/post")}>
+              + Post New Job
+            </button>
           </div>
 
-          {/* QUICK TODO / ACTIONS */}
-          <div className="ad-panel">
-            <div className="ad-panel-header">
-              <h2>Quick actions</h2>
-              <span>For today</span>
-            </div>
-
-            <ul className="ad-todo-list">
-              <li>Review new applications for your latest posting.</li>
-              <li>Shortlist top candidates and schedule interviews.</li>
-              <li>Close roles that have been successfully filled.</li>
-            </ul>
-
-            <div
-              style={{
-                marginTop: "0.6rem",
-                display: "flex",
-                gap: "0.5rem",
-              }}
-            >
-              <button
-                type="button"
-                className="ad-btn ad-btn-primary"
-                onClick={() => {
-                  window.location.href = "/post";
-                }}
-              >
-                Post a new job
-              </button>
-              <button
-                type="button"
-                className="ad-btn ad-btn-outline"
-                onClick={() => window.location.reload()}
-              >
-                Refresh data
+          {loading ? (
+            <div className="ad-loading"><div className="ad-spinner" />Loading jobs…</div>
+          ) : jobsWithCounts.length === 0 ? (
+            <div className="ad-empty-jobs">
+              <p>💼</p>
+              <h3>No jobs posted yet</h3>
+              <p>Create your first job listing to start receiving applications.</p>
+              <button className="ad-btn ad-btn-primary" onClick={() => navigate("/post")}>
+                Post Your First Job
               </button>
             </div>
-          </div>
-        </aside>
-      </section>
+          ) : (
+            <div className="ad-jobs-grid">
+              {jobsWithCounts.map(job => (
+                <div key={job.id} className="ad-job-tile">
+                  <div className="ad-job-tile-top">
+                    <div>
+                      <h3>{job.title}</h3>
+                      <p className="ad-job-tile-meta">
+                        {job.company}
+                        {job.location && ` • 📍${job.location}`}
+                        {job.type && ` • ${job.type}`}
+                        {job.mode && ` • ${job.mode}`}
+                      </p>
+                    </div>
+                    <span className={`ad-badge ${job.status === "closed" ? "ad-closed" : "ad-open"}`}>
+                      {job.status === "closed" ? "Closed" : "Active"}
+                    </span>
+                  </div>
+
+                  <div className="ad-job-tile-stats">
+                    <div className="ad-tile-stat">
+                      <span className="ad-tile-num">{job.count}</span>
+                      <span className="ad-tile-lbl">Applications</span>
+                    </div>
+                    <div className="ad-tile-stat">
+                      <span className="ad-tile-num" style={{ color: "#4ade80" }}>
+                        {apps.filter(a => (a.job?._id || a.job?.id) === job.id && a.status === "Accepted").length}
+                      </span>
+                      <span className="ad-tile-lbl">Accepted</span>
+                    </div>
+                    <div className="ad-tile-stat">
+                      <span className="ad-tile-num" style={{ color: "#fbbf24" }}>
+                        {apps.filter(a => (a.job?._id || a.job?.id) === job.id && a.status === "Reviewing").length}
+                      </span>
+                      <span className="ad-tile-lbl">Reviewing</span>
+                    </div>
+                  </div>
+
+                  <div className="ad-job-tile-actions">
+                    <button className="ad-btn ad-btn-sm ad-btn-outline"
+                      onClick={() => { setActiveTab("applications"); setJobFilter(job.title); }}>
+                      View Applications
+                    </button>
+                    <button className="ad-btn ad-btn-sm ad-btn-outline"
+                      onClick={() => navigate("/post", { state: { editJob: job } })}>
+                      Edit
+                    </button>
+                    <button className="ad-btn ad-btn-sm ad-btn-danger"
+                      disabled={deletingId === job._id || deletingId === job.id}
+                      onClick={() => handleDeleteJob(job._id || job.id, job.title)}>
+                      {deletingId === (job._id || job.id) ? "…" : "Delete"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

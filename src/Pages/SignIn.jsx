@@ -50,27 +50,29 @@ export default function SignIn() {
         return;
       }
 
-      // Save token + session data
       localStorage.setItem("jb_token", res.token);
 
       const sessionUser = {
         name: res.user.name,
         email: res.user.email,
+        id: res.user.id,
       };
       const auth = {
-        role: backendRole, // "jobseeker" | "admin"
+        role: backendRole,
         email: res.user.email,
         provider: "email",
       };
 
       localStorage.setItem("jb_user", JSON.stringify(sessionUser));
       localStorage.setItem("jb_auth", JSON.stringify(auth));
+      // Notify Sidenav to refresh user display
+      window.dispatchEvent(new Event("jb_auth_change"));
 
       // Redirect according to backend role
       if (backendRole === "admin") {
-        navigate("/admin"); // Employer/Admin dashboard
+        navigate("/admin");
       } else {
-        navigate("/job-dashboard"); // Job seeker dashboard
+        navigate("/job-dashboard");
       }
     } catch (err) {
       console.error(err);

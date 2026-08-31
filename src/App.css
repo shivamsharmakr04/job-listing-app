@@ -1,52 +1,77 @@
 /* src/App.css */
-/* App.css */
 
-.app-shell {
-  display: flex;
-  min-height: 100vh;
-  background: #020617; /* dark professional */
-  color: #e5e7eb;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-}
-body, html {
-  margin: 0;
-  padding: 0;
-      /* same family as your Home page */
-}
-/* main content respects the sidenav width variable */
-.app-main {
-  flex: 1;
-  padding: 24px 32px;
-  margin-left: var(--snav-width, 260px);
-  transition: margin-left 0.3s ease, padding 0.2s ease;
-  overflow-x: hidden;
-  background: #020617;
-}
-
-/* Mobile: let sidenav overlay or be smaller */
-@media (max-width: 768px) {
-  .app-main {
-    margin-left: 80px; /* or 0 if you make sidenav overlay on mobile */
-    padding: 16px 16px;
-  }
-}
-
-.app-shell {
-  min-height: 100vh;
-  background: #f3f4f6; /* light professional */
-  display: flex;
-  color: #111827; /* matches navbar font color */
-}
-
-/* leave space for fixed sidenav (240px) */
-.app-main {
-  flex: 1;
-  margin-left: 240px;
-  padding: 24px;
+/* =============================================
+   Reset
+   ============================================= */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* =============================================
+   App Shell — flex row: sidenav | page-content
+   ============================================= */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #020617;
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* =============================================
+   Main content column
+   — pushed right by the fixed sidenav using
+     padding-left so ALL children (including
+     the footer) benefit from the offset
+   ============================================= */
+.app-main {
+  /* Use padding-left so ALL direct children including footer
+     start to the right of the sidenav.
+     The JS in Sidenav.jsx updates --snav-width on :root. */
+  padding-left: var(--snav-width, 260px);
+  transition: padding-left 0.3s ease;
+
+  /* Grow to fill remaining width */
+  flex: 1;
+  min-width: 0;
+
+  /* Flex column so routes-wrapper + footer stack vertically */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  background: #020617;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* The scrollable page content area above the footer gets additional padding */
+.routes-wrapper {
+  flex: 1;
+  padding: 24px 32px 0;
+}
+
+/* =============================================
+   Mobile — sidenav overlays; no offset needed
+   ============================================= */
+@media (max-width: 768px) {
+  .app-main {
+    padding-left: 0;
+  }
+
+  .routes-wrapper {
+    padding: 16px 16px 0;
+  }
+}
+
+/* =============================================
+   Misc shared helpers
+   ============================================= */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -57,7 +82,6 @@ body, html {
 .app-header h1 {
   margin: 0;
   font-size: 24px;
-  color: #111827;
 }
 
 .app-tagline {
@@ -66,7 +90,7 @@ body, html {
 }
 
 .app-content-card {
-  background: #ffffff;
+  background: #1e293b;
   border-radius: 12px;
   padding: 18px;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
@@ -74,7 +98,7 @@ body, html {
 
 .app-content-card p {
   margin: 0 0 8px 0;
-  color: #374151;
+  color: #cbd5e1;
 }
 
 .app-hint {

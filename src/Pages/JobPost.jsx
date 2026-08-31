@@ -1,7 +1,8 @@
 // src/Pages/JobPost.jsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./JobPost.css";
-import { apiCreateJob,apiUpdateJob,apiDeleteJob } from "../api";
+import { apiCreateJob } from "../api";
 
 const DOMAIN_OPTIONS = [
   "Software Development",
@@ -32,6 +33,7 @@ const EXPERIENCE_OPTIONS = [
 ];
 
 export default function PostJob() {
+  const navigate = useNavigate();
   const [job, setJob] = useState({
     title: "",
     company: "",
@@ -128,29 +130,19 @@ export default function PostJob() {
 
       if (res && (res._id || res.id)) {
         alert("✅ Job posted successfully");
-
-        // reset form
+        // Reset form
         setJob({
-          title: "",
-          company: "",
-          location: "",
-          type: "Full-Time",
-          domain: "",
-          customDomain: "",
-          mode: "On-site",
-          minSalary: "",
-          maxSalary: "",
-          currency: "₹",
-          salaryPeriod: "Year",
-          experience: "",
-          openings: "1",
-          applyLink: "",
-          description: "",
-          responsibilities: "",
-          requirements: "",
+          title: "", company: "", location: "",
+          type: "Full-Time", domain: "", customDomain: "",
+          mode: "On-site", minSalary: "", maxSalary: "",
+          currency: "₹", salaryPeriod: "Year", experience: "",
+          openings: "1", applyLink: "", description: "",
+          responsibilities: "", requirements: "",
         });
         setSkills([]);
         setSkillsInput("");
+        // Redirect to admin dashboard
+        navigate("/admin");
 
         // Optional: also cache in localStorage so other pages can use as fallback
         try {

@@ -6,7 +6,13 @@ export default mongoose.model(
     {
       job: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
       applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      status: { type: String, default: "Applied" }
+      status: {
+        type: String,
+        enum: ["Applied", "Reviewing", "Accepted", "Rejected"],
+        default: "Applied",
+      },
+      coverLetter: { type: String, default: "" },
+      notes: { type: String, default: "" }, // internal employer notes
     },
     { timestamps: true }
   )

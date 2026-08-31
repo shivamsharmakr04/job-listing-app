@@ -1,7 +1,8 @@
-// src/api.js
+// src/api.js — Centralised API client for Job Portal
 
-const API_BASE = "http://localhost:5000/api"; // adjust if your backend URL is different
+const API_BASE = "http://localhost:5000/api";
 
+// ─── Token helper ──────────────────────────────────────────────
 function getToken() {
   try {
     return localStorage.getItem("jb_token");
@@ -10,6 +11,7 @@ function getToken() {
   }
 }
 
+// ─── Core fetch wrapper ────────────────────────────────────────
 async function request(path, options = {}) {
   const headers = {
     "Content-Type": "application/json",
@@ -30,7 +32,7 @@ async function request(path, options = {}) {
   try {
     data = await res.json();
   } catch {
-    // ignore
+    // ignore parse errors
   }
 
   if (!res.ok) {
@@ -41,9 +43,34 @@ async function request(path, options = {}) {
   return data;
 }
 
-/* =========================
+// ─── Multipart (file upload) helper ───────────────────────────
+async function uploadFile(path, formData) {
+  const token = getToken();
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    // ignore
+  }
+
+  if (!res.ok) {
+    throw new Error(data?.message || `Upload failed with ${res.status}`);
+  }
+  return data;
+}
+
+/* ======================
    AUTH
-   ========================= */
+   ====================== */
 
 export async function apiSignup(body) {
   return request("/auth/signup", {
@@ -59,14 +86,17 @@ export async function apiLogin(body) {
   });
 }
 
-/* =========================
+/* ======================
    JOBS
-   ========================= */
+   ====================== */
 
-export async function apiGetJobs() {
-  return request("/jobs", {
-    method: "GET",
-  });
+export async function apiGetJobs(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/jobs${qs ? "?" + qs : ""}`, { method: "GET" });
+}
+
+export async function apiGetJobById(jobId) {
+  return request(`/jobs/${jobId}`, { method: "GET" });
 }
 
 export async function apiCreateJob(job) {
@@ -76,56 +106,95 @@ export async function apiCreateJob(job) {
   });
 }
 
-export async function apiDeleteJob(jobId) {
-  return request(`/jobs/${jobId}`, {
-    method: "DELETE",
-  });
-}
-
-/* =========================
-   APPLICATIONS
-   ========================= */
-
-// job seeker applies to a job
-export async function apiApplyJob(jobId) {
-  // If your backend expects different body/URL, adjust accordingly
-  return request(`/jobs/${jobId}/apply`, {
-    method: "POST",
-    body: JSON.stringify({ jobId }),
-  });
-}
-
-// applications of currently logged-in job seeker
-export async function apiMyApplications() {
-  return request("/applications/my", {
-    method: "GET",
-  });
-}
-
-// applications for employer / admin (for all their posted jobs)
-export async function apiEmployerApplications() {
-  return request("/applications/employer", {
-    method: "GET",
-  });
-}
-
-// update status of one application
-export async function apiUpdateStatus(applicationId, status) {
-  return request(`/applications/${applicationId}/status`, {
-    method: "PATCH",
-    body: JSON.stringify({ status }),
-  });
-}
-// src/api.js
-
-// ...your existing request(), apiCreateJob, apiGetJobs etc.
-
-// UPDATE an existing job (admin)
 export async function apiUpdateJob(jobId, body) {
   return request(`/jobs/${jobId}`, {
-    method: "PUT",          // or "PATCH" if your backend uses PATCH
+    method: "PUT",
     body: JSON.stringify(body),
   });
 }
 
+export async function apiDeleteJob(jobId) {
+  return request(`/jobs/${jobId}`, { method: "DELETE" });
+}
 
+/* ======================
+   APPLICATIONS
+   ====================== */
+
+// Job seeker applies to a job (with optional cover letter)
+export async function apiApplyJob(jobId, coverLetter = "") {
+  return request(`/jobs/${jobId}/apply`, {
+    method: "POST",
+    body: JSON.stringify({ coverLetter }),
+  });
+}
+
+// Get own applications (job seeker)
+export async function apiMyApplications() {
+  return request("/applications", { method: "GET" });
+}
+
+// Get applications for employer's jobs (admin)
+export async function apiEmployerApplications() {
+  return request("/employer/applications", { method: "GET" });
+}
+
+// Update application status (admin)
+export async function apiUpdateStatus(applicationId, status) {
+  return request(`/applications/${applicationId}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  });
+}
+
+// Add internal notes to application (admin)
+export async function apiUpdateNotes(applicationId, notes) {
+  return request(`/applications/${applicationId}/notes`, {
+    method: "PUT",
+    body: JSON.stringify({ notes }),
+  });
+}
+
+// Withdraw application (job seeker)
+export async function apiWithdrawApplication(applicationId) {
+  return request(`/applications/${applicationId}`, { method: "DELETE" });
+}
+
+/* ======================
+   USER PROFILE
+   ====================== */
+
+// Get current user profile from backend
+export async function apiGetProfile() {
+  return request("/users/me", { method: "GET" });
+}
+
+// Update profile fields
+export async function apiUpdateProfile(body) {
+  return request("/users/profile", {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+}
+
+// Upload resume (file)
+export async function apiUploadResume(file) {
+  const formData = new FormData();
+  formData.append("resume", file);
+  return uploadFile("/users/resume", formData);
+}
+
+// Upload avatar (file)
+export async function apiUploadAvatar(file) {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  return uploadFile("/users/avatar", formData);
+}
+
+// Change password
+export async function apiChangePassword(currentPassword, newPassword) {
+  return request("/users/password", {
+    method: "PUT",
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+}

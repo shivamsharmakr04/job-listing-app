@@ -13,7 +13,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  async function register(provider = "email") {
+  async function register() {
     if (!name.trim() || !email.trim() || !password.trim() || !confirm.trim()) {
       alert("Please fill all fields.");
       return;
@@ -45,12 +45,11 @@ export default function SignUp() {
         return;
       }
 
-      // Save token + user info in localStorage
       localStorage.setItem("jb_token", loginRes.token);
       localStorage.setItem(
         "jb_auth",
         JSON.stringify({
-          role: loginRes.user.role, // "jobseeker" or "admin"
+          role: loginRes.user.role,
           email: loginRes.user.email,
         })
       );
@@ -59,8 +58,11 @@ export default function SignUp() {
         JSON.stringify({
           name: loginRes.user.name,
           email: loginRes.user.email,
+          id: loginRes.user.id,
         })
       );
+      // Notify Sidenav
+      window.dispatchEvent(new Event("jb_auth_change"));
 
       alert("Account created successfully!");
 
