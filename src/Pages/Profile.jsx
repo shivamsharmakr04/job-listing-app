@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./Profile.css";
 import { apiGetProfile, apiUpdateProfile, apiUploadResume, apiUploadAvatar } from "../api";
 
-const BACKEND_BASE = "http://localhost:5000";
+const BACKEND_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "";
 
 const SECTIONS = [
   { id: "basic",      label: "Basic Details",    required: true },

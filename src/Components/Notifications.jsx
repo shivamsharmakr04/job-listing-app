@@ -4,7 +4,8 @@ export default function Notifications() {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/notifications", {
+    const backendBase = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "";
+    fetch(`${backendBase}/api/notifications`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jb_token")}`,
       },

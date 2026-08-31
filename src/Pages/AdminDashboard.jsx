@@ -472,7 +472,7 @@ export default function AdminDashboard() {
                         </td>
                         <td>
                           {a.resumeUrl
-                            ? <a href={`http://localhost:5000${a.resumeUrl}`} target="_blank"
+                            ? <a href={`${window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : ""}${a.resumeUrl}`} target="_blank"
                                 rel="noreferrer" className="ad-resume-link">View ↗</a>
                             : <span style={{ color: "#475569", fontSize: "0.8rem" }}>—</span>
                           }

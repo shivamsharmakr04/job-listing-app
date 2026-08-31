@@ -1,6 +1,7 @@
 // src/api.js — Centralised API client for Job Portal
 
-const API_BASE = "http://localhost:5000/api";
+const BACKEND_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "";
+const API_BASE = `${BACKEND_BASE}/api`;
 
 // ─── Token helper ──────────────────────────────────────────────
 function getToken() {
