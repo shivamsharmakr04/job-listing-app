@@ -74,7 +74,7 @@ export default function SignUp() {
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong during signup.");
+      alert(err.message || "Something went wrong during signup.");
     }
   }
 

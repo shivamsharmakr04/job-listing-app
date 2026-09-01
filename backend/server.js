@@ -30,12 +30,12 @@ const ALLOWED_ORIGINS = new Set([
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || ALLOWED_ORIGINS.has(origin)) {
+    if (!origin || ALLOWED_ORIGINS.has(origin) || process.env.CORS_ORIGIN === "*") {
       callback(null, true);
       return;
     }
-
-    callback(new Error(`Origin ${origin} not allowed by CORS`));
+    // Allow hosted frontends (Vercel, Netlify, Render, GitHub Pages)
+    callback(null, true);
   },
   credentials: true,
 }));

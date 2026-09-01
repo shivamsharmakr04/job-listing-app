@@ -76,7 +76,7 @@ export default function SignIn() {
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong while signing in.");
+      alert(err.message || "Something went wrong while signing in.");
     }
   }
 

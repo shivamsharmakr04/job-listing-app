@@ -61,9 +61,10 @@ router.post("/login", async (req, res) => {
     }
 
     // issue JWT
+    const secret = process.env.JWT_SECRET || "default_jwt_secret_key_12345";
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET,
+      secret,
       { expiresIn: "7d" }
     );
 
