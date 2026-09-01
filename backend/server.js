@@ -51,16 +51,22 @@ app.get("/", (_req, res) => {
 });
 
 // ─── MongoDB connection ────────────────────────────────────────
-const mongoUri = process.env.MONGO_URI;
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
+
 if (!mongoUri) {
-  console.error("❌ Error: MONGO_URI environment variable is not defined.");
-  console.error("Please set MONGO_URI in your Render Environment Variables.");
+  console.error("❌ Error: MongoDB URI environment variable is not defined.");
+  console.error("Please set MONGO_URI or MONGODB_URI in your Render Environment Variables.");
 } else {
   mongoose
-    .connect(mongoUri)
+    .connect(mongoUri, {
+      serverSelectionTimeoutMS: 5000,
+      retryWrites: true,
+      w: "majority",
+    })
     .then(() => console.log("✅ MongoDB connected successfully"))
     .catch((err) => {
       console.error("❌ MongoDB connection failed:", err.message);
+      process.exit(1);
     });
 }
 
