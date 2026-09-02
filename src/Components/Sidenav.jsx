@@ -13,6 +13,8 @@ import {
   faSignOutAlt,
   faBars,
   faTimes,
+  faChevronLeft,
+  faChevronRight,
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faTachometerAlt,
@@ -145,6 +147,18 @@ export default function SideNav() {
       )}
 
       <aside className={sideNavClass} aria-label="Sidebar navigation">
+        {/* Desktop Edge Floating Toggle Button */}
+        {!isMobile && (
+          <button
+            className={`snav-edge-toggle ${collapsed ? "collapsed" : ""}`}
+            onClick={toggleSidebar}
+            title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            aria-label={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            <FontAwesomeIcon icon={collapsed ? faChevronRight : faChevronLeft} />
+          </button>
+        )}
+
         {/* Header / Brand */}
         <div className="snav-header">
           <NavLink to="/" className="brand" onClick={handleNavClick}>
@@ -156,13 +170,6 @@ export default function SideNav() {
               </div>
             )}
           </NavLink>
-
-          {/* Desktop collapse button */}
-          {!isMobile && (
-            <button className="snav-toggle" onClick={toggleSidebar} title={collapsed ? "Expand menu" : "Collapse menu"}>
-              <FontAwesomeIcon icon={collapsed ? faAngleDoubleRight : faAngleDoubleLeft} />
-            </button>
-          )}
 
           {/* Mobile close button inside drawer */}
           {isMobile && (
@@ -267,4 +274,5 @@ export default function SideNav() {
     </>
   );
 }
+
 
