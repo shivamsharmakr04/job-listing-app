@@ -1,12 +1,11 @@
 /* ============================================================
    Job.css — Browse Roles Page Styling
-   Aligned seamlessly with the dark midnight & glowing indigo theme
+   Aligned seamlessly with dark midnight & glowing indigo theme
    ============================================================ */
 
 .jobs-page {
   min-height: 100vh;
-  padding: 24px 32px 60px;
-  background: radial-gradient(ellipse at 20% 0%, #1e1b4b 0%, #0f172a 45%, #030712 100%);
+  padding-bottom: 60px;
   color: #f8fafc;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -539,10 +538,6 @@
 }
 
 @media (max-width: 600px) {
-  .jobs-page {
-    padding: 16px 14px 40px;
-  }
-
   .jobs-hero-banner {
     padding: 20px;
   }
@@ -551,4 +546,3 @@
     font-size: 1.5rem;
   }
 }
-
