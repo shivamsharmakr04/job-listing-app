@@ -1,9 +1,11 @@
 /* ============================================================
-   JobPost.css — Post a Job Page Styling
+   JobPost.css — Redesigned Post a Job Page Styling
    Aligned with dark midnight glass design system
    ============================================================ */
 
 .postjob-page {
+  max-width: 1280px;
+  margin: 0 auto;
   min-height: 100vh;
   padding-bottom: 60px;
   color: #f8fafc;
@@ -11,15 +13,15 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 /* ─── HEADER BANNER ──────────────────────────────────────── */
 .postjob-header {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(15, 23, 42, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 28px 32px;
+  border-radius: 20px;
+  padding: 24px 32px;
   backdrop-filter: blur(16px);
   display: flex;
   justify-content: space-between;
@@ -29,46 +31,50 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
-.postjob-header h1 {
+.header-info h1 {
   font-size: 1.8rem;
   font-weight: 800;
-  margin: 0 0 4px 0;
+  margin: 0 0 6px 0;
   background: linear-gradient(135deg, #a855f7, #6366f1, #38bdf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
 }
 
-.postjob-header p {
+.header-info p {
   margin: 0;
   color: #94a3b8;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
 }
 
 .postjob-actions-top {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* ─── FORM GRID LAYOUT ───────────────────────────────────── */
 .postjob-form {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
   align-items: flex-start;
 }
 
 .postjob-main {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  min-width: 0;
 }
 
+/* ─── STICKY ASSISTANT SIDEBAR ───────────────────────────── */
 .postjob-side {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   position: sticky;
   top: 24px;
+  align-self: flex-start;
 }
 
 /* ─── GLASS CARDS ────────────────────────────────────────── */
@@ -79,41 +85,70 @@
   padding: 24px;
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.postjob-card h2, .postjob-card h3 {
+.postjob-card:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.card-header h2 {
   margin: 0 0 4px 0;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #f8fafc;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+}
+
+.card-header .hint {
+  margin: 0;
+}
+
+.postjob-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f8fafc;
 }
 
 .step-num {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #ffffff;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
 }
 
 .hint {
-  margin: 0 0 16px 0;
   font-size: 0.84rem;
   color: #94a3b8;
+  margin-bottom: 16px;
 }
 
+/* ─── FORM FIELDS & GRIDS ────────────────────────────────── */
 .grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .field {
@@ -123,82 +158,257 @@
 }
 
 .field label {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: #cbd5e1;
 }
 
-.req { color: #f43f5e; }
+.req {
+  color: #f43f5e;
+}
 
-.field input, .field select, .field textarea {
-  background: rgba(2, 6, 23, 0.8);
+.field input,
+.field select,
+.field textarea {
+  background: rgba(2, 6, 23, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 11px 15px;
   color: #ffffff;
   font-size: 0.9rem;
   outline: none;
   font-family: inherit;
+  box-sizing: border-box;
+  width: 100%;
   transition: all 0.2s ease;
+}
+
+.field select {
+  cursor: pointer;
 }
 
 .field select option {
   background: #0f172a;
+  color: #f8fafc;
 }
 
-.field input:focus, .field select:focus, .field textarea:focus {
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
   border-color: #6366f1;
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.35);
+  background: rgba(15, 23, 42, 0.95);
 }
 
-.salary-row {
+/* ─── STEP 3: COMPENSATION & LOCATION (FIXED LAYOUT) ───── */
+.location-field {
+  margin-bottom: 20px;
+}
+
+.salary-container {
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
-  gap: 8px;
-  align-items: center;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.salary-row select { min-width: 90px; }
-.salary-row input { flex: 1; }
-.salary-sep { color: #64748b; font-weight: 600; }
+.salary-container-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #a855f7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
+.salary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
+  gap: 14px;
+}
+
+.salary-badge-preview {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.86rem;
+}
+
+.salary-badge-preview strong {
+  color: #6ee7b7;
+}
+
+/* ─── STEP 5: SKILLS & TAGS ──────────────────────────────── */
 .skills-input-row {
   display: flex;
   gap: 10px;
 }
 
-.skills-input-row input { flex: 1; }
+.skills-input-row input {
+  flex: 1;
+}
+
+.popular-skills-section {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popular-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.popular-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.popular-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.popular-chip:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+  color: #ffffff;
+}
+
+.popular-chip.selected {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #818cf8;
+  cursor: default;
+  opacity: 0.7;
+}
 
 .skills-chip-row {
-  margin-top: 12px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.active-skills-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #c084fc;
+}
+
+.chips-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
 .skill-chip {
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  color: #c084fc;
-  padding: 4px 12px;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #e9d5ff;
+  padding: 5px 12px;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .skill-chip button {
   background: transparent;
   border: none;
-  color: #fda4af;
+  color: #f43f5e;
   cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
 }
 
-/* ─── PREVIEW CARD ───────────────────────────────────────── */
+.skill-chip button:hover {
+  color: #fb7185;
+}
+
+.app-link-field {
+  margin-top: 16px;
+}
+
+/* ─── SIDEBAR: PROGRESS TRACKER ──────────────────────────── */
+.progress-card h3 {
+  margin-bottom: 12px;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #38bdf8);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.progress-status-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.progress-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-checklist li {
+  font-size: 0.82rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+}
+
+.progress-checklist li.done {
+  color: #34d399;
+  font-weight: 600;
+}
+
+/* ─── SIDEBAR: PREVIEW CARD ──────────────────────────────── */
+.preview-card-wrapper h3 {
+  margin-bottom: 2px;
+}
+
 .preview-card-box {
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(2, 6, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 16px;
   display: flex;
@@ -207,29 +417,43 @@
 }
 
 .preview-avatar {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: #fff;
+  color: #ffffff;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+}
+
+.preview-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .preview-title {
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  margin: 0 0 2px 0;
+  margin: 0 0 4px 0;
   color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .preview-company {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: #38bdf8;
-  margin: 0 0 4px 0;
+  margin: 0 0 6px 0;
+}
+
+.domain-pill {
+  color: #c084fc;
 }
 
 .preview-meta {
@@ -242,35 +466,67 @@
   font-size: 0.82rem;
   color: #34d399;
   font-weight: 600;
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
 }
 
 .preview-skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 
 .preview-skills span {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
-  font-size: 0.74rem;
-  padding: 2px 8px;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  padding: 2px 7px;
   border-radius: 6px;
 }
 
-/* ─── BUTTONS ────────────────────────────────────────────── */
+.preview-skills .more-skills {
+  color: #818cf8;
+  font-weight: 600;
+}
+
+/* ─── SIDEBAR: PRO TIPS ──────────────────────────────────── */
+.tips-card {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.tips-list {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tips-list strong {
+  color: #e2e8f0;
+}
+
+/* ─── SIDEBAR: ACTIONS ───────────────────────────────────── */
+.postjob-actions-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
 .btn-outline-small {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #f8fafc;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 999px;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .btn-outline-small:hover {
@@ -278,36 +534,66 @@
   border-color: #6366f1;
 }
 
+.btn-secondary {
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #818cf8;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  background: rgba(99, 102, 241, 0.35);
+  color: #ffffff;
+}
+
 .btn-primary {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border-radius: 999px;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.15);
   transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
 }
 
-.postjob-actions-bottom {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 12px;
-}
-
-@media (max-width: 860px) {
+/* ─── RESPONSIVE BREAKPOINTS ─────────────────────────────── */
+@media (max-width: 1024px) {
   .postjob-form {
     grid-template-columns: 1fr;
   }
   .postjob-side {
     position: static;
   }
+  .salary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .salary-grid {
+    grid-template-columns: 1fr;
+  }
+  .postjob-header {
+    padding: 20px;
+  }
+}
+
