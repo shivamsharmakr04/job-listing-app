@@ -162,7 +162,12 @@ export default function SideNav() {
         {/* Header / Brand */}
         <div className="snav-header">
           <NavLink to="/" className="brand" onClick={handleNavClick}>
-            <div className="logo">JP</div>
+            <div className="logo">
+              <svg width="22" height="22" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M176 192V144C176 117.49 197.49 96 224 96H288C314.51 96 336 117.49 336 144V192H384C410.51 192 432 213.49 432 240V384C432 410.51 410.51 432 384 432H128C101.49 432 80 410.51 80 384V240C80 213.49 101.49 192 128 192H176ZM224 144V192H288V144C288 135.16 280.84 128 272 128H240C231.16 128 224 135.16 224 144ZM128 240V384H384V240H128Z" fill="#ffffff" />
+                <circle cx="256" cy="300" r="28" fill="#38bdf8" />
+              </svg>
+            </div>
             {(!collapsed || isMobile) && (
               <div className="brand-info">
                 <div className="title">JobPortal</div>
