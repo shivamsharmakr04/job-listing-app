@@ -1,12 +1,6 @@
-.signup-page {
-  padding: 24px;
-  min-height: calc(100vh - 48px);
-  box-sizing: border-box;
-  background: #f3f4f6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* SignUp.css — Share styles with SignIn.css for consistent auth glass design */
+@import "./SignIn.css";
+
 
 .signup-card {
   width: 100%;

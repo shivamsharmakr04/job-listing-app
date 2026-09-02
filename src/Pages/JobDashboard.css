@@ -1,9 +1,8 @@
 /* ============================================================
-   JobDashboard.css — Premium job seeker dashboard
+   JobDashboard.css — Candidate Command Center Dashboard
    ============================================================ */
 
-/* ─── Page wrapper ────────────────────────────────────────── */
-.jd-page {
+.dash-page {
   min-height: 100vh;
   padding: 28px 32px;
   background: radial-gradient(circle at top left, #0d2044 0%, #020617 55%);

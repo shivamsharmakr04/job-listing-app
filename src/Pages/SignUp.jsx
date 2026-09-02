@@ -1,7 +1,7 @@
 // src/Pages/SignUp.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { apiSignup, apiLogin } from "../api"; // ✅
+import { useNavigate, Link } from "react-router-dom";
+import { apiSignup, apiLogin } from "../api";
 import "./SignUp.css";
 
 export default function SignUp() {
@@ -12,19 +12,24 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  async function register() {
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setErrorMsg("");
+
     if (!name.trim() || !email.trim() || !password.trim() || !confirm.trim()) {
-      alert("Please fill all fields.");
+      setErrorMsg("Please fill all required fields.");
       return;
     }
     if (password !== confirm) {
-      alert("Passwords do not match.");
+      setErrorMsg("Passwords do not match.");
       return;
     }
 
+    setLoading(true);
     try {
-      // Backend role is same as UI selection: "jobseeker" or "admin"
       const signupRes = await apiSignup({
         name,
         email,
@@ -33,15 +38,17 @@ export default function SignUp() {
       });
 
       if (!signupRes || signupRes.error || signupRes.message === "Signup failed") {
-        alert("Signup failed: " + (signupRes?.error || signupRes?.message || ""));
+        setErrorMsg(signupRes?.error || signupRes?.message || "Registration failed.");
+        setLoading(false);
         return;
       }
 
-      // Auto login after signup
+      // Auto login after successful signup
       const loginRes = await apiLogin({ email, password });
 
       if (!loginRes || !loginRes.token) {
-        alert(loginRes?.message || "Auto login failed");
+        setErrorMsg("Registration successful! Please sign in with your new credentials.");
+        setTimeout(() => navigate("/signin"), 2000);
         return;
       }
 
@@ -61,12 +68,8 @@ export default function SignUp() {
           id: loginRes.user.id,
         })
       );
-      // Notify Sidenav
       window.dispatchEvent(new Event("jb_auth_change"));
 
-      alert("Account created successfully!");
-
-      // Redirect according to role
       if (loginRes.user.role === "admin") {
         navigate("/admin");
       } else {
@@ -74,149 +77,134 @@ export default function SignUp() {
       }
     } catch (err) {
       console.error(err);
-      alert(err.message || "Something went wrong during signup.");
+      setErrorMsg(err.message || "An unexpected error occurred during signup.");
+    } finally {
+      setLoading(false);
     }
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    register("email"); // email-based signup
-  }
-
-  const headingText =
-    userType === "jobseeker"
-      ? "Create your job seeker account"
-      : "Create your admin account";
-
-  const buttonText =
-    userType === "jobseeker"
-      ? "Create job seeker account"
-      : "Create admin account";
-
   return (
-    <div className="signup-page">
-      <div className="signup-card">
-        {/* LEFT: intro text */}
-        <div className="signup-left">
-          <h1>Join JobPortal</h1>
-          <p>
-            Register as a <strong>Job Seeker</strong> (employee) to search and
-            apply, or as an <strong>Admin</strong> to post and manage jobs.
-          </p>
-          <ul>
-            <li>Employees: apply to jobs with one click</li>
-            <li>Admins: create and manage job listings</li>
-            <li>Track application status in real-time</li>
-          </ul>
-        </div>
+    <div className="auth-page">
+      <div className="auth-glass-card">
+        {/* LEFT: Branding Panel */}
+        <div className="auth-left-panel">
+          <div className="auth-brand-badge">
+            <div className="logo-box">JP</div>
+            <span>JobPortal</span>
+          </div>
 
-        {/* RIGHT: user type + social + email form */}
-        <div className="signup-right">
-          <div className="signup-header-row">
-            <h2>{headingText}</h2>
+          <h1>Create Account</h1>
+          <p>Join thousands of tech professionals applying to top global engineering roles.</p>
 
-            <div className="user-type-toggle">
-              <button
-                type="button"
-                className={userType === "jobseeker" ? "active" : ""}
-                onClick={() => setUserType("jobseeker")}
-              >
-                Job Seeker
-              </button>
-              <button
-                type="button"
-                className={userType === "admin" ? "active" : ""}
-                onClick={() => setUserType("admin")}
-              >
-                Admin
-              </button>
+          <div className="auth-perks-list">
+            <div className="perk-item">
+              <span className="perk-icon">🚀</span>
+              <div>
+                <strong>Curated Remote Roles</strong>
+                <p>Access high-paying engineering & product design positions.</p>
+              </div>
+            </div>
+
+            <div className="perk-item">
+              <span className="perk-icon">📊</span>
+              <div>
+                <strong>Real-Time Application Tracker</strong>
+                <p>Know exactly when employers review your resume.</p>
+              </div>
+            </div>
+
+            <div className="perk-item">
+              <span className="perk-icon">🛡️</span>
+              <div>
+                <strong>Verified Employers Only</strong>
+                <p>Zero spam, direct connections with tech hiring teams.</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Social register with icons – still demo */}
-          <div className="signup-social">
+        {/* RIGHT: Form Panel */}
+        <div className="auth-right-panel">
+          {/* Segmented Role Switcher */}
+          <div className="auth-role-toggle">
             <button
               type="button"
-              className="social-btn google"
-              onClick={() => register("Google")}
+              className={userType === "jobseeker" ? "active" : ""}
+              onClick={() => { setUserType("jobseeker"); setErrorMsg(""); }}
             >
-              <span className="social-icon">G</span>
-              <span>Continue with Google</span>
+              💼 Job Seeker
             </button>
             <button
               type="button"
-              className="social-btn apple"
-              onClick={() => register("Apple")}
+              className={userType === "admin" ? "active" : ""}
+              onClick={() => { setUserType("admin"); setErrorMsg(""); }}
             >
-              <span className="social-icon"></span>
-              <span>Continue with Apple</span>
-            </button>
-            <button
-              type="button"
-              className="social-btn linkedin"
-              onClick={() => register("LinkedIn")}
-            >
-              <span className="social-icon">in</span>
-              <span>Continue with LinkedIn</span>
+              🛡️ Admin / Employer
             </button>
           </div>
 
-          <div className="signup-divider">
-            <span></span>
-            <p>or sign up with email</p>
-            <span></span>
-          </div>
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <h2>{userType === "jobseeker" ? "Register as Job Seeker" : "Register Admin Account"}</h2>
+            <p className="auth-subtext">Fill in your information to get started</p>
 
-          <form className="signup-form" onSubmit={handleSubmit}>
-            <div className="field">
+            {errorMsg && <div className="auth-error-banner">⚠️ {errorMsg}</div>}
+
+            <div className="input-field">
               <label>Full Name</label>
               <input
                 type="text"
-                placeholder="Enter your full name"
+                placeholder="Alex Rivers"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
             </div>
 
-            <div className="field">
-              <label>Email</label>
+            <div className="input-field">
+              <label>Email Address</label>
               <input
                 type="email"
-                placeholder="you@example.com"
+                placeholder="alex@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
-            <div className="field">
+            <div className="input-field">
               <label>Password</label>
               <input
                 type="password"
                 placeholder="Create a strong password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
-            <div className="field">
+            <div className="input-field">
               <label>Confirm Password</label>
               <input
                 type="password"
-                placeholder="Re-enter password"
+                placeholder="Confirm password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
+                required
               />
             </div>
 
-            <button type="submit" className="btn-primary-large signup-btn">
-              {buttonText}
+            <button type="submit" className="btn-auth-submit" disabled={loading}>
+              {loading ? "Creating Account..." : userType === "jobseeker" ? "Create Job Seeker Account ➔" : "Create Admin Account ➔"}
             </button>
 
-            <p className="signup-note">
-            </p>
+            <div className="auth-footer-prompt">
+              <span>Already have an account?</span>
+              <Link to="/signin" className="auth-link">Sign In</Link>
+            </div>
           </form>
         </div>
       </div>
     </div>
   );
 }
+

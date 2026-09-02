@@ -171,18 +171,6 @@
 
 /* ================= LIST ================= */
 
-.apps-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Application card matching dark theme */
-.app-card {
-  background: var(--apps-card-bg);
-  border-radius: var(--apps-radius-md);
-  padding: 14px 16px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
   border: 1px solid var(--apps-card-border);
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);

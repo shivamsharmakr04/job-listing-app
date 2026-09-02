@@ -472,12 +472,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* Phone */
-
-.phone-row {
-  display: flex;
-  gap: 6px;
-}
 
 .phone-row select {
   max-width: 80px;
