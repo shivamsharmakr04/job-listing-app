@@ -12,6 +12,7 @@ import {
   faUserPlus,
   faSignOutAlt,
   faBars,
+  faTimes,
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faTachometerAlt,
@@ -37,7 +38,7 @@ export default function SideNav() {
 
   const isAdmin = auth?.role === "admin";
 
-  // ─── Sync user state on any auth change ────────────────────
+  // Sync user state on any auth change
   useEffect(() => {
     function syncAuth() {
       try {
@@ -56,14 +57,13 @@ export default function SideNav() {
     };
   }, []);
 
-  // ─── Responsive: auto-collapse on small screens ─────────────
+  // Responsive check on resize
   useEffect(() => {
     function checkMobile() {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
       if (mobile) {
-        setCollapsed(true);
-        setMobileMenuOpen(false);
+        setCollapsed(false); // Mobile uses full drawer mode when open
       }
     }
     checkMobile();
@@ -71,34 +71,32 @@ export default function SideNav() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // ─── Update layout offset when sidebar width changes ───────
+  // Update layout offset variable on root
   useEffect(() => {
     const width = isMobile ? "0px" : collapsed ? "80px" : "260px";
-    // Update the CSS variable (used by app-main padding-left)
     document.documentElement.style.setProperty("--snav-width", width);
-    // Also set it directly on app-main for instant effect
     const appMain = document.querySelector(".app-main");
     if (appMain) {
       appMain.style.paddingLeft = width;
     }
   }, [collapsed, isMobile]);
 
-  // ─── Navigation items (role-aware) ──────────────────────────
+  // Navigation items
   const publicItems = [
-    { id: "home",      label: "Home",      icon: faHome,      to: "/" },
-    { id: "companies", label: "Browse Jobs", icon: faBuilding, to: "/companies" },
+    { id: "home", label: "Home", icon: faHome, to: "/" },
+    { id: "companies", label: "Browse Roles", icon: faBuilding, to: "/companies" },
   ];
 
   const seekerItems = [
-    { id: "job-dashboard",  label: "My Dashboard",         icon: faTachometerAlt, to: "/job-dashboard" },
-    { id: "profile",        label: "Profile",              icon: faUser,          to: "/profile" },
-    { id: "applications",   label: "Application Status",   icon: faEnvelope,      to: "/applications" },
+    { id: "job-dashboard", label: "My Dashboard", icon: faTachometerAlt, to: "/job-dashboard" },
+    { id: "profile", label: "Profile", icon: faUser, to: "/profile" },
+    { id: "applications", label: "Applications", icon: faEnvelope, to: "/applications" },
   ];
 
   const adminItems = [
-    { id: "admin",   label: "Admin Dashboard", icon: faShieldAlt, to: "/admin" },
-    { id: "profile", label: "Profile",         icon: faUser,      to: "/profile" },
-    { id: "post",    label: "Post a Job",       icon: faPen,       to: "/post" },
+    { id: "admin", label: "Admin Portal", icon: faShieldAlt, to: "/admin" },
+    { id: "profile", label: "Profile", icon: faUser, to: "/profile" },
+    { id: "post", label: "Post a Job", icon: faPen, to: "/post" },
   ];
 
   const authItems = isAdmin ? adminItems : seekerItems;
@@ -117,55 +115,66 @@ export default function SideNav() {
     setUser(null);
     setAuth(null);
     window.dispatchEvent(new Event("jb_auth_change"));
+    if (isMobile) setMobileMenuOpen(false);
     navigate("/signin");
   }
 
   const sideNavClass = [
     "snav",
-    collapsed ? "collapsed" : "",
-    isMobile  ? "mobile"   : "",
-    mobileMenuOpen ? "mobile-open" : "",
+    collapsed && !isMobile ? "collapsed" : "",
+    isMobile ? "mobile" : "",
+    isMobile && mobileMenuOpen ? "mobile-open" : "",
   ].filter(Boolean).join(" ");
 
   return (
     <>
-      {/* Mobile hamburger */}
+      {/* Mobile Floating Toggle Button */}
       {isMobile && (
-        <button className="mobile-menu-btn" onClick={toggleSidebar} aria-label="Open menu">
-          <FontAwesomeIcon icon={faBars} />
+        <button
+          className="mobile-menu-btn"
+          onClick={toggleSidebar}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+        >
+          <FontAwesomeIcon icon={mobileMenuOpen ? faTimes : faBars} />
         </button>
       )}
 
-      {/* Mobile dark overlay */}
+      {/* Mobile Glass Backdrop Overlay */}
       {isMobile && mobileMenuOpen && (
         <div className="mobile-overlay" onClick={() => setMobileMenuOpen(false)} />
       )}
 
       <aside className={sideNavClass} aria-label="Sidebar navigation">
+        {/* Header / Brand */}
+        <div className="snav-header">
+          <NavLink to="/" className="brand" onClick={handleNavClick}>
+            <div className="logo">JP</div>
+            {(!collapsed || isMobile) && (
+              <div className="brand-info">
+                <div className="title">JobPortal</div>
+                <div className="subtitle">Modern Tech Jobs</div>
+              </div>
+            )}
+          </NavLink>
 
-        {/* Brand */}
-        <NavLink to="/" className="brand" onClick={handleNavClick}>
-          <div className="logo">JP</div>
-          {!collapsed && (
-            <div>
-              <div className="title">JobPortal</div>
-              <div className="subtitle">Find your next role</div>
-            </div>
+          {/* Desktop collapse button */}
+          {!isMobile && (
+            <button className="snav-toggle" onClick={toggleSidebar} title={collapsed ? "Expand menu" : "Collapse menu"}>
+              <FontAwesomeIcon icon={collapsed ? faAngleDoubleRight : faAngleDoubleLeft} />
+            </button>
           )}
-        </NavLink>
 
-        {/* Desktop collapse toggle */}
-        {!isMobile && (
-          <button className="snav-toggle" onClick={toggleSidebar} title="Toggle sidebar">
-            <FontAwesomeIcon icon={collapsed ? faAngleDoubleRight : faAngleDoubleLeft} />
-          </button>
-        )}
+          {/* Mobile close button inside drawer */}
+          {isMobile && (
+            <button className="mobile-close-drawer" onClick={() => setMobileMenuOpen(false)}>
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          )}
+        </div>
 
-        {/* Nav links */}
+        {/* Navigation list */}
         <nav className="nav-list" aria-label="Main navigation">
-
-          {/* Always-visible public items */}
-          {publicItems.map(item => (
+          {publicItems.map((item) => (
             <NavLink
               key={item.id}
               to={item.to}
@@ -174,20 +183,20 @@ export default function SideNav() {
               onClick={handleNavClick}
             >
               <div className="ico"><FontAwesomeIcon icon={item.icon} /></div>
-              {!collapsed && <div className="nav-label">{item.label}</div>}
+              {(!collapsed || isMobile) && <div className="nav-label">{item.label}</div>}
             </NavLink>
           ))}
 
-          {/* Divider when logged in */}
-          {user && !collapsed && (
+          {/* Section Divider when authenticated */}
+          {user && (!collapsed || isMobile) && (
             <div className="nav-divider">
-              <span>{isAdmin ? "Employer" : "My Account"}</span>
+              <span>{isAdmin ? "Admin Controls" : "User Workspace"}</span>
             </div>
           )}
-          {user && collapsed && <div className="nav-divider-dot" />}
+          {user && collapsed && !isMobile && <div className="nav-divider-dot" />}
 
-          {/* Role-based items */}
-          {user && authItems.map(item => (
+          {/* Role-specific menu items */}
+          {user && authItems.map((item) => (
             <NavLink
               key={item.id}
               to={item.to}
@@ -195,11 +204,11 @@ export default function SideNav() {
               onClick={handleNavClick}
             >
               <div className="ico"><FontAwesomeIcon icon={item.icon} /></div>
-              {!collapsed && <div className="nav-label">{item.label}</div>}
+              {(!collapsed || isMobile) && <div className="nav-label">{item.label}</div>}
             </NavLink>
           ))}
 
-          {/* Auth links when not logged in */}
+          {/* Guest authentication menu items */}
           {!user && (
             <>
               <NavLink
@@ -208,7 +217,7 @@ export default function SideNav() {
                 onClick={handleNavClick}
               >
                 <div className="ico"><FontAwesomeIcon icon={faKey} /></div>
-                {!collapsed && <div className="nav-label">Sign In</div>}
+                {(!collapsed || isMobile) && <div className="nav-label">Sign In</div>}
               </NavLink>
               <NavLink
                 to="/signup"
@@ -216,7 +225,7 @@ export default function SideNav() {
                 onClick={handleNavClick}
               >
                 <div className="ico"><FontAwesomeIcon icon={faUserPlus} /></div>
-                {!collapsed && <div className="nav-label">Sign Up</div>}
+                {(!collapsed || isMobile) && <div className="nav-label">Sign Up</div>}
               </NavLink>
             </>
           )}
@@ -224,15 +233,14 @@ export default function SideNav() {
 
         <div className="spacer" />
 
-        {/* User pill + logout */}
+        {/* User profile & logout footer */}
         {user && (
           <div className="bottom-actions">
-            {/* User info */}
-            <div className="user-pill">
+            <div className="user-pill" onClick={() => { navigate("/profile"); handleNavClick(); }}>
               <div className="user-avatar">
                 {(user.name || user.email || "U").charAt(0).toUpperCase()}
               </div>
-              {!collapsed && (
+              {(!collapsed || isMobile) && (
                 <div className="user-text">
                   <strong>{user.name || "User"}</strong>
                   <small>{user.email}</small>
@@ -240,13 +248,18 @@ export default function SideNav() {
               )}
             </div>
 
-            {/* Logout */}
-            <div className="logout" onClick={signOut} role="button" tabIndex={0}
-              onKeyDown={e => e.key === "Enter" && signOut()}>
+            <div
+              className="logout-btn"
+              onClick={signOut}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && signOut()}
+              title="Sign Out"
+            >
               <div className="logout-ico">
                 <FontAwesomeIcon icon={faSignOutAlt} />
               </div>
-              {!collapsed && <div>Logout</div>}
+              {(!collapsed || isMobile) && <div className="logout-label">Log Out</div>}
             </div>
           </div>
         )}
@@ -254,3 +267,4 @@ export default function SideNav() {
     </>
   );
 }
+

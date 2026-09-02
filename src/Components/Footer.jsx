@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Footer.css";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
   const auth = (() => {
     try { return JSON.parse(localStorage.getItem("jb_auth")); }
@@ -13,119 +15,129 @@ export default function Footer() {
   const isAdmin = auth?.role === "admin";
   const isLoggedIn = !!auth;
 
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setTimeout(() => {
+        setSubscribed(false);
+        setEmail("");
+      }, 3500);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleQuickCategory = () => {
+    navigate("/");
+    window.scrollTo({ top: 400, behavior: "smooth" });
+  };
+
   return (
     <footer className="app-footer">
-      {/* Top gradient bar */}
-      <div className="footer-gradient-bar" />
+      {/* Top Accent Gradient Border */}
+      <div className="footer-top-glow" />
 
-      <div className="footer-inner">
-
-        {/* Brand Column */}
-        <div className="footer-col footer-brand">
-          <div className="footer-logo-wrap">
-            <div className="footer-logo-icon">JP</div>
-            <h2 className="footer-logo-text">JobPortal</h2>
+      <div className="footer-container">
+        {/* Main 3-Column Content Grid */}
+        <div className="footer-grid">
+          {/* Column 1: Brand & Status */}
+          <div className="footer-brand-col">
+            <div className="footer-logo-row" onClick={scrollToTop}>
+              <div className="footer-logo-box">JP</div>
+              <div className="footer-brand-title">
+                <h2>JobPortal</h2>
+                <span className="footer-version">v2.0</span>
+              </div>
+            </div>
+            <p className="footer-tagline">
+              Empowering top tech talent to discover remote and high-growth engineering roles worldwide.
+            </p>
+            <div className="footer-status-pill">
+              <span className="status-dot" /> 100% Systems Operational
+            </div>
+            <div className="footer-social-row">
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-pill" title="LinkedIn">LinkedIn</a>
+              <a href="https://x.com" target="_blank" rel="noreferrer" className="social-pill" title="Twitter">X / Twitter</a>
+              <a href="https://github.com" target="_blank" rel="noreferrer" className="social-pill" title="GitHub">GitHub</a>
+              <a href="https://discord.com" target="_blank" rel="noreferrer" className="social-pill" title="Discord">Discord</a>
+            </div>
           </div>
-          <p className="footer-tagline">
-            Discover jobs, track applications, and grow your career — all in one
-            clean, distraction-free platform built for modern professionals.
-          </p>
-          <div className="footer-social-row">
-            <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"
-               className="footer-social-link linkedin" aria-label="LinkedIn">
-              <span className="footer-social-icon">in</span>
-              <span>LinkedIn</span>
-            </a>
-            <a href="https://x.com" target="_blank" rel="noreferrer"
-               className="footer-social-link twitter" aria-label="Twitter">
-              <span className="footer-social-icon">𝕏</span>
-              <span>Twitter</span>
-            </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer"
-               className="footer-social-link github" aria-label="GitHub">
-              <span className="footer-social-icon">⌥</span>
-              <span>GitHub</span>
-            </a>
+
+          {/* Column 2: Navigation & Quick Tech Domains */}
+          <div className="footer-links-col">
+            <div className="footer-subcol">
+              <h4>Navigation</h4>
+              <ul className="footer-link-list">
+                <li><NavLink to="/" onClick={scrollToTop}>Home</NavLink></li>
+                <li><NavLink to="/companies" onClick={scrollToTop}>Browse Roles</NavLink></li>
+                {isLoggedIn && <li><NavLink to="/profile" onClick={scrollToTop}>My Profile</NavLink></li>}
+                {isLoggedIn && !isAdmin && <li><NavLink to="/job-dashboard" onClick={scrollToTop}>Dashboard</NavLink></li>}
+                {isLoggedIn && !isAdmin && <li><NavLink to="/applications" onClick={scrollToTop}>Applications</NavLink></li>}
+                {isAdmin && <li><NavLink to="/admin" onClick={scrollToTop}>Admin Panel</NavLink></li>}
+                {isAdmin && <li><NavLink to="/post" onClick={scrollToTop}>Post a Job</NavLink></li>}
+                {!isLoggedIn && <li><NavLink to="/signin" onClick={scrollToTop}>Sign In</NavLink></li>}
+                {!isLoggedIn && <li><NavLink to="/signup" onClick={scrollToTop}>Sign Up</NavLink></li>}
+              </ul>
+            </div>
+
+            <div className="footer-subcol">
+              <h4>Popular Domains</h4>
+              <ul className="footer-link-list">
+                <li><button type="button" className="text-btn" onClick={handleQuickCategory}>Frontend Engineering</button></li>
+                <li><button type="button" className="text-btn" onClick={handleQuickCategory}>Backend Architecture</button></li>
+                <li><button type="button" className="text-btn" onClick={handleQuickCategory}>Full Stack & AI</button></li>
+                <li><button type="button" className="text-btn" onClick={handleQuickCategory}>Data Science & ML</button></li>
+                <li><button type="button" className="text-btn" onClick={handleQuickCategory}>Cloud & DevOps</button></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Column 3: Newsletter & Back-to-Top */}
+          <div className="footer-newsletter-col">
+            <h4>Stay Connected</h4>
+            <p>Get curated weekly alerts for remote engineering & product design positions.</p>
+
+            <form className="footer-news-form" onSubmit={handleSubscribe}>
+              {subscribed ? (
+                <div className="news-success-alert">
+                  ✨ Subscribed! Check your inbox soon.
+                </div>
+              ) : (
+                <div className="news-input-pill">
+                  <input
+                    type="email"
+                    placeholder="Enter your work email..."
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <button type="submit" className="news-submit-btn">
+                    Join
+                  </button>
+                </div>
+              )}
+            </form>
+
+            <div className="footer-back-top-wrap">
+              <button type="button" className="btn-back-top" onClick={scrollToTop}>
+                Back to Top ↑
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Navigation Column */}
-        <div className="footer-col">
-          <h3 className="footer-heading">Quick Links</h3>
-          <nav className="footer-links" aria-label="Footer navigation">
-            <NavLink to="/" className="footer-link">🏠 Home</NavLink>
-            <NavLink to="/companies" className="footer-link">🏢 Browse Jobs</NavLink>
-            {isLoggedIn && (
-              <NavLink to="/profile" className="footer-link">👤 My Profile</NavLink>
-            )}
-            {isLoggedIn && !isAdmin && (
-              <NavLink to="/job-dashboard" className="footer-link">📊 My Dashboard</NavLink>
-            )}
-            {isLoggedIn && !isAdmin && (
-              <NavLink to="/applications" className="footer-link">📋 My Applications</NavLink>
-            )}
-            {isAdmin && (
-              <NavLink to="/admin" className="footer-link">🛡️ Admin Dashboard</NavLink>
-            )}
-            {isAdmin && (
-              <NavLink to="/post" className="footer-link">➕ Post a Job</NavLink>
-            )}
-            {!isLoggedIn && (
-              <NavLink to="/signin" className="footer-link">🔑 Sign In</NavLink>
-            )}
-            {!isLoggedIn && (
-              <NavLink to="/signup" className="footer-link">📝 Sign Up</NavLink>
-            )}
-          </nav>
+        {/* Bottom Rights & Badges */}
+        <div className="footer-bottom-bar">
+          <p>© {currentYear} <strong>JobPortal</strong> Inc. All rights reserved.</p>
+          <div className="footer-bottom-links">
+            <span className="footer-badge">🔒 End-to-End Secure</span>
+            <span className="footer-badge">⚡ Instant Apply</span>
+            <span className="footer-badge">🌐 Global Remote</span>
+          </div>
         </div>
-
-        {/* Support Column */}
-        <div className="footer-col">
-          <h3 className="footer-heading">Support</h3>
-          <p className="footer-text">
-            Have questions? Our support team is here to help you succeed on your
-            job search journey.
-          </p>
-          <ul className="footer-list">
-            <li>
-              <a href="mailto:support@jobportal.com" className="footer-list-link">
-                📧 support@jobportal.com
-              </a>
-            </li>
-            <li><span className="footer-list-link">❓ Help Center</span></li>
-            <li><span className="footer-list-link">🔒 Privacy Policy</span></li>
-            <li><span className="footer-list-link">📄 Terms &amp; Conditions</span></li>
-          </ul>
-
-          {/* CTA */}
-          {!isLoggedIn && (
-            <button className="footer-cta-btn" onClick={() => navigate("/signup")}>
-              Get Started Free →
-            </button>
-          )}
-          {isLoggedIn && !isAdmin && (
-            <button className="footer-cta-btn" onClick={() => navigate("/companies")}>
-              Browse Open Roles →
-            </button>
-          )}
-          {isAdmin && (
-            <button className="footer-cta-btn" onClick={() => navigate("/post")}>
-              Post a New Job →
-            </button>
-          )}
-        </div>
-
-      </div>
-
-      {/* Bottom bar */}
-      <div className="footer-bottom">
-        <p>© {currentYear} <strong>JobPortal</strong>. All rights reserved.</p>
-        <div className="footer-bottom-badges">
-          <span className="footer-badge">⚡ Fast</span>
-          <span className="footer-badge">🔒 Secure</span>
-          <span className="footer-badge">🌐 Live</span>
-        </div>
-        <p className="footer-bottom-right">Built for job seekers &amp; employers</p>
       </div>
     </footer>
   );

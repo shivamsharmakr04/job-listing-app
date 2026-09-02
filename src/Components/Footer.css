@@ -1,326 +1,377 @@
 /* ============================================================
-   Footer.css — Full-width footer that sits cleanly under
-   app-main content, with NO negative-margin hacks.
+   Footer.css — Simple, Smooth & Interactive Dark Slate Footer
+   Seamlessly matching Home page & Sidenav colors & layout
    ============================================================ */
 
-/* ─── Main container ──────────────────────────────────────── */
 .app-footer {
-  /* Explicit positioning: stay in normal flow but take viewport-aware width.
-     This is the most reliable way to make the footer sit to the right of
-     the fixed sidenav regardless of flex/margin/padding calculations. */
-  margin-top: 5rem;
-  background: linear-gradient(180deg, #0a0f1e 0%, #050a14 100%);
-  color: #94a3b8;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   position: relative;
+  background: #080c15;
+  color: #94a3b8;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 4rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;
 }
 
-/* ─── Animated gradient top bar ─────────────────────────── */
-.footer-gradient-bar {
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+/* Glowing Top Accent Border */
+.footer-top-glow {
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #10b981, #6366f1);
   background-size: 200% 100%;
-  animation: gradientShift 4s linear infinite;
+  animation: shimmer 6s linear infinite;
 }
 
-@keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-/* ─── Background glow blobs ──────────────────────────────── */
-.app-footer::before,
-.app-footer::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-}
-.app-footer::before {
-  width: 400px;
-  height: 400px;
-  background: rgba(59, 130, 246, 0.06);
-  top: -100px;
-  left: 0;
-}
-.app-footer::after {
-  width: 300px;
-  height: 300px;
-  background: rgba(139, 92, 246, 0.05);
-  bottom: -80px;
-  right: 80px;
-}
-
-/* ─── Inner grid ────────────────────────────────────────────────── */
-.footer-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  /* 32px left matches the page content left padding, so brand column
-     starts at the same indentation as all page headings */
-  padding: 3rem 2rem 2.5rem 2rem;
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 2.5rem;
+.footer-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem 2rem;
   box-sizing: border-box;
 }
 
-/* ─── Columns ────────────────────────────────────────────── */
-.footer-col {
+/* ─── MAIN 3-COLUMN GRID ─────────────────────────────────── */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1.1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── COLUMN 1: BRAND ────────────────────────────────────── */
+.footer-brand-col {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  opacity: 0;
-  transform: translateY(18px);
-  animation: colFadeIn 0.6s ease forwards;
-}
-.footer-col:nth-child(1) { animation-delay: 0.05s; }
-.footer-col:nth-child(2) { animation-delay: 0.15s; }
-.footer-col:nth-child(3) { animation-delay: 0.25s; }
-
-@keyframes colFadeIn {
-  to { opacity: 1; transform: translateY(0); }
+  gap: 14px;
 }
 
-/* ─── Brand ──────────────────────────────────────────────── */
-.footer-logo-wrap {
+.footer-logo-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  cursor: pointer;
+  width: fit-content;
+  transition: transform 0.2s ease;
 }
 
-.footer-logo-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+.footer-logo-row:hover {
+  transform: translateY(-2px);
+}
+
+.footer-logo-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: white;
-  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
 }
 
-.footer-logo-text {
-  font-size: 1.5rem;
-  font-weight: 800;
+.footer-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-brand-title h2 {
   margin: 0;
-  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #f8fafc;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+}
+
+.footer-version {
+  font-size: 0.72rem;
+  background: rgba(99, 102, 241, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
 }
 
 .footer-tagline {
   font-size: 0.88rem;
-  line-height: 1.7;
-  color: #64748b;
-  max-width: 320px;
+  line-height: 1.6;
+  color: #94a3b8;
+  margin: 0;
 }
 
-/* ─── Social links ───────────────────────────────────────── */
-.footer-social-row {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.footer-social-link {
+.footer-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  color: #94a3b8;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 7px 14px;
-  border-radius: 999px;
-  font-size: 0.8rem;
+  gap: 8px;
+  font-size: 0.78rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.25s ease;
-}
-
-.footer-social-link:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.footer-social-icon { font-size: 0.78rem; }
-.linkedin:hover  { border-color: #0a66c2; color: #0a66c2; }
-.twitter:hover   { border-color: #e2e8f0; color: #e2e8f0; }
-.github:hover    { border-color: #a78bfa; color: #a78bfa; }
-
-/* ─── Headings ───────────────────────────────────────────── */
-.footer-heading {
-  color: #f1f5f9;
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* ─── Quick links ────────────────────────────────────────── */
-.footer-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.footer-link {
-  text-decoration: none;
-  color: #64748b;
-  font-size: 0.87rem;
-  padding: 5px 10px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 5px 14px;
+  border-radius: 999px;
   width: fit-content;
 }
 
-.footer-link:hover {
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateX(4px);
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #34d399;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseDot 1.8s infinite;
 }
 
-.footer-link.active { color: #38bdf8; }
-
-/* ─── Support text ───────────────────────────────────────── */
-.footer-text {
-  font-size: 0.86rem;
-  line-height: 1.65;
-  color: #64748b;
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
 }
 
-/* ─── List ───────────────────────────────────────────────── */
-.footer-list {
+.footer-social-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.social-pill {
+  text-decoration: none;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.social-pill:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: #6366f1;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ─── COLUMN 2: LINKS ────────────────────────────────────── */
+.footer-links-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.footer-subcol h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 14px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-link-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
-.footer-list li { font-size: 0.87rem; }
-
-.footer-list-link {
-  color: #64748b;
+.footer-link-list a,
+.footer-link-list .text-btn {
   text-decoration: none;
-  display: inline-block;
-  padding: 3px 0;
-  transition: color 0.2s, transform 0.15s;
+  color: #94a3b8;
+  font-size: 0.88rem;
+  background: transparent;
+  border: none;
+  padding: 0;
   cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: left;
 }
 
-.footer-list-link:hover {
-  color: #38bdf8;
+.footer-link-list a:hover,
+.footer-link-list .text-btn:hover {
+  color: #ffffff;
   transform: translateX(4px);
 }
 
-/* ─── CTA button ─────────────────────────────────────────── */
-.footer-cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: white;
-  border: none;
-  padding: 10px 20px;
+/* ─── COLUMN 3: NEWSLETTER ───────────────────────────────── */
+.footer-newsletter-col h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-newsletter-col p {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.news-input-pill {
+  display: flex;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.35);
   border-radius: 999px;
-  font-size: 0.85rem;
+  padding: 3px 3px 3px 16px;
+  transition: all 0.25s ease;
+}
+
+.news-input-pill:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+}
+
+.news-input-pill input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.86rem;
+  outline: none;
+}
+
+.news-input-pill input::placeholder {
+  color: #64748b;
+}
+
+.news-submit-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
-  width: fit-content;
-  margin-top: 4px;
+  transition: all 0.2s ease;
 }
 
-.footer-cta-btn:hover {
+.news-submit-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+}
+
+.news-success-alert {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #34d399;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.footer-back-top-wrap {
+  margin-top: 18px;
+}
+
+.btn-back-top {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back-top:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.5);
 }
 
-/* ─── Bottom bar ─────────────────────────────────────────── */
-.footer-bottom {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 1.2rem 2.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+/* ─── BOTTOM BAR ─────────────────────────────────────────── */
+.footer-bottom-bar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 1rem;
-  font-size: 0.82rem;
-  color: #475569;
-  box-sizing: border-box;
+  padding-top: 1.8rem;
+  font-size: 0.84rem;
+  color: #64748b;
 }
 
-.footer-bottom strong { color: #64748b; }
+.footer-bottom-bar strong {
+  color: #cbd5e1;
+}
 
-.footer-bottom-badges { display: flex; gap: 8px; }
+.footer-bottom-links {
+  display: flex;
+  gap: 8px;
+}
 
 .footer-badge {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 3px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  padding: 4px 12px;
   border-radius: 999px;
-  font-size: 0.75rem;
-  color: #475569;
+  font-size: 0.76rem;
 }
 
-.footer-bottom-right { color: #475569; }
-
-/* ─── Responsive ─────────────────────────────────────────── */
-@media (max-width: 1024px) {
-  .footer-inner {
-    grid-template-columns: 1fr 1fr;
-  }
-  .footer-col.footer-brand {
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 768px) {
-  /* On mobile the sidenav overlays the content,
-     so app-main starts at left: 0. Footer just fills it. */
-  .app-footer {
-    margin-top: 3rem;
-  }
-
-  .footer-inner {
+/* ─── RESPONSIVE BREAKPOINTS ─────────────────────────────── */
+@media (max-width: 960px) {
+  .footer-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
-    padding: 2.5rem 1.5rem 2rem;
   }
 
-  .footer-col.footer-brand {
-    grid-column: span 1;
-  }
-
-  .footer-tagline { max-width: 100%; }
-
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
+  .footer-links-col {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (max-width: 480px) {
-  .footer-social-row { flex-wrap: wrap; }
-  .footer-bottom-badges { justify-content: center; }
+@media (max-width: 600px) {
+  .footer-container {
+    padding: 2.5rem 1.2rem 1.5rem;
+  }
+
+  .footer-links-col {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .footer-bottom-bar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .news-input-pill {
+    flex-direction: column;
+    border-radius: 16px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .news-input-pill input {
+    text-align: center;
+  }
+
+  .news-submit-btn {
+    width: 100%;
+  }
 }
