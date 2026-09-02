@@ -210,7 +210,7 @@ export default function PostJob() {
                 <input
                   value={job.title}
                   onChange={(e) => updateField("title", e.target.value)}
-                  placeholder="e.g. Senior Frontend Engineer"
+                  placeholder="Job Position"
                   required
                 />
               </div>
@@ -220,7 +220,7 @@ export default function PostJob() {
                 <input
                   value={job.company}
                   onChange={(e) => updateField("company", e.target.value)}
-                  placeholder="e.g. Google / Acme Corp"
+                  placeholder="Company Name"
                   required
                 />
               </div>
@@ -243,7 +243,7 @@ export default function PostJob() {
                   <input
                     value={job.customDomain}
                     onChange={(e) => updateField("customDomain", e.target.value)}
-                    placeholder="e.g. DevRel / Web3 / Robotics"
+                    placeholder="Custom Domain"
                   />
                 </div>
               )}
@@ -324,7 +324,7 @@ export default function PostJob() {
               <input
                 value={job.location}
                 onChange={(e) => updateField("location", e.target.value)}
-                placeholder="e.g. Bangalore, India / Remote (Global)"
+                placeholder="Location"
               />
             </div>
 
@@ -351,7 +351,7 @@ export default function PostJob() {
                   <input
                     type="number"
                     min="0"
-                    placeholder="e.g. 15"
+                    placeholder="Minimum Salary"
                     value={job.minSalary}
                     onChange={(e) => updateField("minSalary", e.target.value)}
                   />
@@ -362,7 +362,7 @@ export default function PostJob() {
                   <input
                     type="number"
                     min="0"
-                    placeholder="e.g. 25"
+                    placeholder="Maximum Salary"
                     value={job.maxSalary}
                     onChange={(e) => updateField("maxSalary", e.target.value)}
                   />
@@ -410,7 +410,7 @@ export default function PostJob() {
                 rows={3}
                 value={job.description}
                 onChange={(e) => updateField("description", e.target.value)}
-                placeholder="Summarize the core mission and business impact of this role in 2–3 lines..."
+                placeholder="Role Overview"
               />
             </div>
 
@@ -420,7 +420,7 @@ export default function PostJob() {
                 rows={4}
                 value={job.responsibilities}
                 onChange={(e) => updateField("responsibilities", e.target.value)}
-                placeholder="• Build and maintain modern web applications using React.\n• Collaborate with design and backend engineers."
+                placeholder="Key Responsibilities"
               />
             </div>
 
@@ -430,7 +430,7 @@ export default function PostJob() {
                 rows={4}
                 value={job.requirements}
                 onChange={(e) => updateField("requirements", e.target.value)}
-                placeholder="• 3+ years experience with JavaScript / TypeScript.\n• Strong problem-solving and system architecture skills."
+                placeholder="Required Qualifications"
               />
             </div>
           </div>
@@ -452,7 +452,7 @@ export default function PostJob() {
                   value={skillsInput}
                   onChange={(e) => setSkillsInput(e.target.value)}
                   onKeyDown={handleSkillKeyDown}
-                  placeholder="e.g. React, Node.js, AWS, Python..."
+                  placeholder=""
                 />
                 <button type="button" className="btn-secondary" onClick={() => addSkill()}>
                   + Add Skill
@@ -501,7 +501,7 @@ export default function PostJob() {
               <input
                 value={job.applyLink}
                 onChange={(e) => updateField("applyLink", e.target.value)}
-                placeholder="https://company.com/careers/job-id or hr@company.com"
+                placeholder="Application Link"
               />
             </div>
           </div>
