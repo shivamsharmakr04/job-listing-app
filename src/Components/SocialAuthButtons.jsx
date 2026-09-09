@@ -76,7 +76,6 @@ export default function SocialAuthButtons({
   function triggerProviderFlow(provider) {
     if (provider === "google") {
       if (googleClientId && window.google?.accounts?.id) {
-        // Real Google Identity Services client ID configured
         try {
           window.google.accounts.id.initialize({
             client_id: googleClientId,
@@ -92,26 +91,25 @@ export default function SocialAuthButtons({
           window.google.accounts.id.prompt();
           return;
         } catch (e) {
-          console.warn("GSI Prompt failed, falling back:", e);
+          console.warn("GSI Prompt error:", e);
         }
       }
 
-      // Fallback/Demo interactive prompt
-      setInputEmail(role === "admin" ? "admin.tech@gmail.com" : "alex.rivers@gmail.com");
-      setInputName(role === "admin" ? "Alex Rivers (Admin)" : "Alex Rivers");
+      // Real user Google / Gmail account input
+      setInputEmail("");
+      setInputName("");
       setModalProvider("google");
     } else if (provider === "linkedin") {
       if (linkedinClientId) {
-        // LinkedIn OAuth Redirect URL
-        const redirectUri = encodeURIComponent(window.location.origin + "/signin");
+        const redirectUri = encodeURIComponent(window.location.origin + "/signup");
         const linkedinUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${redirectUri}&scope=r_liteprofile%20r_emailaddress`;
         window.location.href = linkedinUrl;
         return;
       }
 
-      // Fallback/Demo interactive prompt
-      setInputEmail(role === "admin" ? "admin.recruiter@linkedin.com" : "alex.rivers@linkedin.com");
-      setInputName(role === "admin" ? "Alex Rivers (Lead Recruiter)" : "Alex Rivers");
+      // Real user LinkedIn account input
+      setInputEmail("");
+      setInputName("");
       setModalProvider("linkedin");
     }
   }
@@ -119,7 +117,14 @@ export default function SocialAuthButtons({
   function handleModalSubmit(e) {
     e.preventDefault();
     if (!inputEmail.trim()) return;
-    handleSocialLogin(modalProvider, inputEmail.trim(), inputName.trim());
+    const defaultName = inputEmail.split("@")[0].replace(/[\._]/g, " ");
+    const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
+    handleSocialLogin(modalProvider, inputEmail.trim(), inputName.trim() || formattedName);
+  }
+
+  function fillSampleEmail(sampleEmail, sampleName) {
+    setInputEmail(sampleEmail);
+    setInputName(sampleName);
   }
 
   return (
@@ -180,13 +185,13 @@ export default function SocialAuthButtons({
         </button>
       </div>
 
-      {/* Social Modal for email confirm */}
+      {/* Social Modal for account choice */}
       {modalProvider && (
         <div className="social-modal-overlay" onClick={() => setModalProvider(null)}>
           <div className="social-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="social-modal-header">
               <h3>
-                {modalProvider === "google" ? "🌐 Connect Google Account" : "💼 Connect LinkedIn Account"}
+                {modalProvider === "google" ? "🌐 Sign in with Google / Gmail" : "💼 Sign in with LinkedIn"}
               </h3>
               <button
                 type="button"
@@ -197,30 +202,45 @@ export default function SocialAuthButtons({
               </button>
             </div>
             <p className="social-modal-sub">
-              Authenticate via {modalProvider === "google" ? "Google / Gmail" : "LinkedIn"} to sign {mode === "signup" ? "up" : "in"} as <strong>{role === "admin" ? "Admin / Employer" : "Job Seeker"}</strong>.
+              Authenticate your account as <strong>{role === "admin" ? "Admin / Employer" : "Job Seeker"}</strong> using your {modalProvider === "google" ? "Google (Gmail)" : "LinkedIn"} credentials.
             </p>
 
             <form onSubmit={handleModalSubmit} className="social-modal-form">
               <div className="input-field">
-                <label>Full Name</label>
+                <label>Your Full Name</label>
                 <input
                   type="text"
                   value={inputName}
                   onChange={(e) => setInputName(e.target.value)}
-                  placeholder="Your Name"
-                  required
+                  placeholder="e.g. Sarah Jenkins"
                 />
               </div>
 
               <div className="input-field">
-                <label>{modalProvider === "google" ? "Google / Gmail Address" : "LinkedIn Work Email"}</label>
+                <label>{modalProvider === "google" ? "Gmail Address" : "LinkedIn Email Address"}</label>
                 <input
                   type="email"
                   value={inputEmail}
                   onChange={(e) => setInputEmail(e.target.value)}
-                  placeholder="name@gmail.com"
+                  placeholder={modalProvider === "google" ? "user@gmail.com" : "user@company.com"}
                   required
                 />
+              </div>
+
+              <div className="social-quick-chips">
+                <span className="chip-label">Quick fill demo:</span>
+                <button
+                  type="button"
+                  className="social-chip"
+                  onClick={() =>
+                    fillSampleEmail(
+                      modalProvider === "google" ? "user.tech@gmail.com" : "user.dev@linkedin.com",
+                      "Alex Rivers"
+                    )
+                  }
+                >
+                  {modalProvider === "google" ? "user.tech@gmail.com" : "user.dev@linkedin.com"}
+                </button>
               </div>
 
               <div className="social-modal-actions">
@@ -236,7 +256,7 @@ export default function SocialAuthButtons({
                   className={`btn-modal-confirm ${modalProvider === "google" ? "google-bg" : "linkedin-bg"}`}
                   disabled={loadingProvider !== null}
                 >
-                  {loadingProvider ? "Connecting..." : `Confirm ${modalProvider === "google" ? "Google" : "LinkedIn"} Login ➔`}
+                  {loadingProvider ? "Authenticating..." : mode === "signup" ? "Create Account & Sign In ➔" : "Sign In with Social ➔"}
                 </button>
               </div>
             </form>
