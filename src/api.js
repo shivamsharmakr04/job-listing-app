@@ -102,6 +102,13 @@ export async function apiLogin(body) {
   });
 }
 
+export async function apiSocialAuth(body) {
+  return request("/auth/social", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
 /* ======================
    JOBS
    ====================== */

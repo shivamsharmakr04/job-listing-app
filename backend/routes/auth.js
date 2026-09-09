@@ -75,11 +75,68 @@ router.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar || "",
       },
     });
   } catch (err) {
     console.error("Login error:", err.message);
     return res.json({ message: "Login failed" });
+  }
+});
+
+// POST /api/auth/social — Find or create user via Social Provider (Google / LinkedIn)
+router.post("/social", async (req, res) => {
+  try {
+    const { name, email, avatar, provider, googleId, linkedinId, role } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required for social authentication." });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // Update existing user with social provider ID and avatar if not present
+      if (provider === "google" && googleId && !user.googleId) user.googleId = googleId;
+      if (provider === "linkedin" && linkedinId && !user.linkedinId) user.linkedinId = linkedinId;
+      if (avatar && !user.avatar) user.avatar = avatar;
+      if (provider && (!user.provider || user.provider === "email")) user.provider = provider;
+      await user.save();
+    } else {
+      // Create new user via social auth
+      user = await User.create({
+        name: name || email.split("@")[0],
+        email,
+        avatar: avatar || "",
+        role: role || "jobseeker",
+        provider: provider || "google",
+        googleId: googleId || "",
+        linkedinId: linkedinId || "",
+      });
+    }
+
+    // Issue JWT
+    const secret = process.env.JWT_SECRET || "default_jwt_secret_key_12345";
+    const token = jwt.sign(
+      { id: user._id },
+      secret,
+      { expiresIn: "7d" }
+    );
+
+    return res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || "",
+        provider: user.provider,
+      },
+    });
+  } catch (err) {
+    console.error("Social auth error:", err);
+    return res.status(500).json({ message: "Social authentication failed.", error: err.message });
   }
 });
 

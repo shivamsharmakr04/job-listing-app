@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiSignup, apiLogin } from "../api";
+import SocialAuthButtons from "../Components/SocialAuthButtons";
 import "./SignUp.css";
 
 export default function SignUp() {
@@ -196,6 +197,15 @@ export default function SignUp() {
             <button type="submit" className="btn-auth-submit" disabled={loading}>
               {loading ? "Creating Account..." : userType === "jobseeker" ? "Create Job Seeker Account ➔" : "Create Admin Account ➔"}
             </button>
+
+            <SocialAuthButtons
+              role={userType}
+              mode="signup"
+              onSuccess={(user) => {
+                navigate(user.role === "admin" ? "/admin" : "/job-dashboard");
+              }}
+              onError={(msg) => setErrorMsg(msg)}
+            />
 
             <div className="auth-footer-prompt">
               <span>Already have an account?</span>

@@ -8,6 +8,10 @@ const schema = new mongoose.Schema(
     password: String,
     role:     { type: String, enum: ["admin", "jobseeker"], default: "jobseeker" },
 
+    provider:   { type: String, default: "email" }, // "email" | "google" | "linkedin"
+    googleId:   { type: String, default: "" },
+    linkedinId: { type: String, default: "" },
+
     // ── Core Profile ──────────────────────────────────────────────
     bio:      { type: String, default: "" },
     about:    { type: String, default: "" },   // alias for bio
@@ -47,7 +51,7 @@ const schema = new mongoose.Schema(
 );
 
 schema.pre("save", async function () {
-  if (this.isModified("password")) {
+  if (this.password && this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }
 });

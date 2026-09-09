@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiLogin } from "../api";
+import SocialAuthButtons from "../Components/SocialAuthButtons";
 import "./SignIn.css";
 
 export default function SignIn() {
@@ -188,6 +189,15 @@ export default function SignIn() {
             <button type="submit" className="btn-auth-submit" disabled={loading}>
               {loading ? "Signing in..." : role === "jobseeker" ? "Sign In to Workspace ➔" : "Access Admin Panel ➔"}
             </button>
+
+            <SocialAuthButtons
+              role={role}
+              mode="signin"
+              onSuccess={(user) => {
+                navigate(user.role === "admin" ? "/admin" : "/job-dashboard");
+              }}
+              onError={(msg) => setErrorMsg(msg)}
+            />
 
             <div className="auth-footer-prompt">
               <span>Don't have an account?</span>
