@@ -25,7 +25,7 @@ export default function SocialAuthButtons({
       const res = await apiSocialAuth({
         email,
         name: name || (provider === "google" ? "Google User" : "LinkedIn Professional"),
-        avatar: avatar || (provider === "google" ? "https://cdn-icons-png.flaticon.com/512/300/300221.png" : "https://cdn-icons-png.flaticon.com/512/3536/3536505.png"),
+        avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=random`,
         provider,
         googleId: provider === "google" ? (socialId || `goog_${Date.now()}`) : "",
         linkedinId: provider === "linkedin" ? (socialId || `link_${Date.now()}`) : "",
@@ -74,12 +74,11 @@ export default function SocialAuthButtons({
   }
 
   React.useEffect(() => {
-    // Check if Google GSI SDK is available
-    if (window.google?.accounts?.id) {
+    // Only initialize Google GSI SDK if a valid googleClientId is provided
+    if (googleClientId && window.google?.accounts?.id) {
       try {
-        const clientId = googleClientId || "832948712391-demoapp.apps.googleusercontent.com";
         window.google.accounts.id.initialize({
-          client_id: clientId,
+          client_id: googleClientId,
           callback: (response) => {
             try {
               // Decode ID Token JWT
