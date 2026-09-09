@@ -73,41 +73,68 @@ export default function SocialAuthButtons({
     }
   }
 
+  React.useEffect(() => {
+    // Check if Google GSI SDK is available
+    if (window.google?.accounts?.id) {
+      try {
+        const clientId = googleClientId || "832948712391-demoapp.apps.googleusercontent.com";
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: (response) => {
+            try {
+              // Decode ID Token JWT
+              const base64Url = response.credential.split(".")[1];
+              const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+              const jsonPayload = decodeURIComponent(
+                atob(base64)
+                  .split("")
+                  .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                  .join("")
+              );
+              const payload = JSON.parse(jsonPayload);
+              handleSocialLogin("google", payload.email, payload.name, payload.picture, payload.sub);
+            } catch (err) {
+              console.error("Failed to parse Google credential:", err);
+            }
+          },
+        });
+      } catch (e) {
+        console.warn("Google GSI Init warning:", e);
+      }
+    }
+  }, [googleClientId, role]);
+
   function triggerProviderFlow(provider) {
     if (provider === "google") {
-      if (googleClientId && window.google?.accounts?.id) {
+      if (window.google?.accounts?.id) {
         try {
-          window.google.accounts.id.initialize({
-            client_id: googleClientId,
-            callback: (response) => {
-              try {
-                const payload = JSON.parse(atob(response.credential.split(".")[1]));
-                handleSocialLogin("google", payload.email, payload.name, payload.picture, payload.sub);
-              } catch {
-                handleSocialLogin("google", "user@gmail.com", "Google User");
-              }
-            },
+          window.google.accounts.id.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+              // Open modal fallback for quick authentication
+              setInputEmail("");
+              setInputName("");
+              setModalProvider("google");
+            }
           });
-          window.google.accounts.id.prompt();
           return;
         } catch (e) {
-          console.warn("GSI Prompt error:", e);
+          console.warn("GSI Prompt failed:", e);
         }
       }
 
-      // Real user Google / Gmail account input
+      // Open interactive authentication modal
       setInputEmail("");
       setInputName("");
       setModalProvider("google");
     } else if (provider === "linkedin") {
       if (linkedinClientId) {
         const redirectUri = encodeURIComponent(window.location.origin + "/signup");
-        const linkedinUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${redirectUri}&scope=r_liteprofile%20r_emailaddress`;
-        window.location.href = linkedinUrl;
+        const linkedinUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${redirectUri}&scope=openid%20profile%20email`;
+        window.open(linkedinUrl, "LinkedIn Auth", "width=600,height=700");
         return;
       }
 
-      // Real user LinkedIn account input
+      // Open interactive authentication modal
       setInputEmail("");
       setInputName("");
       setModalProvider("linkedin");
