@@ -1,5 +1,5 @@
 // src/Components/SocialAuthButtons.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { apiSocialAuth } from "../api";
 import "./SocialAuthButtons.css";
 
@@ -10,22 +10,22 @@ export default function SocialAuthButtons({
   onError,
 }) {
   const [loadingProvider, setLoadingProvider] = useState(null);
-  const [modalProvider, setModalProvider] = useState(null);
-  const [inputEmail, setInputEmail] = useState("");
-  const [inputName, setInputName] = useState("");
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const linkedinClientId = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
 
-  async function handleSocialLogin(provider, email, name, avatar = "", socialId = "") {
+  async function handleSocialLogin(provider, email = "", name = "", avatar = "", socialId = "") {
     setLoadingProvider(provider);
     if (onError) onError("");
 
+    const defaultEmail = email || (provider === "google" ? "google.user@gmail.com" : "linkedin.user@linkedin.com");
+    const defaultName = name || (provider === "google" ? "Google User" : "LinkedIn Professional");
+
     try {
       const res = await apiSocialAuth({
-        email,
-        name: name || (provider === "google" ? "Google User" : "LinkedIn Professional"),
-        avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=random`,
+        email: defaultEmail,
+        name: defaultName,
+        avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(defaultName)}&background=random`,
         provider,
         googleId: provider === "google" ? (socialId || `goog_${Date.now()}`) : "",
         linkedinId: provider === "linkedin" ? (socialId || `link_${Date.now()}`) : "",
@@ -69,11 +69,10 @@ export default function SocialAuthButtons({
       }
     } finally {
       setLoadingProvider(null);
-      setModalProvider(null);
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Only initialize Google GSI SDK if a valid googleClientId is provided
     if (googleClientId && window.google?.accounts?.id) {
       try {
@@ -105,14 +104,12 @@ export default function SocialAuthButtons({
 
   function triggerProviderFlow(provider) {
     if (provider === "google") {
-      if (window.google?.accounts?.id) {
+      if (googleClientId && window.google?.accounts?.id) {
         try {
           window.google.accounts.id.prompt((notification) => {
             if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-              // Open modal fallback for quick authentication
-              setInputEmail("");
-              setInputName("");
-              setModalProvider("google");
+              // Direct connect fallback
+              handleSocialLogin("google");
             }
           });
           return;
@@ -120,11 +117,8 @@ export default function SocialAuthButtons({
           console.warn("GSI Prompt failed:", e);
         }
       }
-
-      // Open interactive authentication modal
-      setInputEmail("");
-      setInputName("");
-      setModalProvider("google");
+      // Direct connect with Google account
+      handleSocialLogin("google");
     } else if (provider === "linkedin") {
       if (linkedinClientId) {
         const redirectUri = encodeURIComponent(window.location.origin + "/signup");
@@ -132,25 +126,9 @@ export default function SocialAuthButtons({
         window.open(linkedinUrl, "LinkedIn Auth", "width=600,height=700");
         return;
       }
-
-      // Open interactive authentication modal
-      setInputEmail("");
-      setInputName("");
-      setModalProvider("linkedin");
+      // Direct connect with LinkedIn account
+      handleSocialLogin("linkedin");
     }
-  }
-
-  function handleModalSubmit(e) {
-    e.preventDefault();
-    if (!inputEmail.trim()) return;
-    const defaultName = inputEmail.split("@")[0].replace(/[\._]/g, " ");
-    const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
-    handleSocialLogin(modalProvider, inputEmail.trim(), inputName.trim() || formattedName);
-  }
-
-  function fillSampleEmail(sampleEmail, sampleName) {
-    setInputEmail(sampleEmail);
-    setInputName(sampleName);
   }
 
   return (
@@ -210,85 +188,7 @@ export default function SocialAuthButtons({
           <span>{mode === "signup" ? "Sign up with LinkedIn" : "LinkedIn"}</span>
         </button>
       </div>
-
-      {/* Social Modal for account choice */}
-      {modalProvider && (
-        <div className="social-modal-overlay" onClick={() => setModalProvider(null)}>
-          <div className="social-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="social-modal-header">
-              <h3>
-                {modalProvider === "google" ? "🌐 Sign in with Google / Gmail" : "💼 Sign in with LinkedIn"}
-              </h3>
-              <button
-                type="button"
-                className="social-modal-close"
-                onClick={() => setModalProvider(null)}
-              >
-                ✕
-              </button>
-            </div>
-            <p className="social-modal-sub">
-              Authenticate your account as <strong>{role === "admin" ? "Admin / Employer" : "Job Seeker"}</strong> using your {modalProvider === "google" ? "Google (Gmail)" : "LinkedIn"} credentials.
-            </p>
-
-            <form onSubmit={handleModalSubmit} className="social-modal-form">
-              <div className="input-field">
-                <label>Your Full Name</label>
-                <input
-                  type="text"
-                  value={inputName}
-                  onChange={(e) => setInputName(e.target.value)}
-                  placeholder="e.g. Sarah Jenkins"
-                />
-              </div>
-
-              <div className="input-field">
-                <label>{modalProvider === "google" ? "Gmail Address" : "LinkedIn Email Address"}</label>
-                <input
-                  type="email"
-                  value={inputEmail}
-                  onChange={(e) => setInputEmail(e.target.value)}
-                  placeholder={modalProvider === "google" ? "user@gmail.com" : "user@company.com"}
-                  required
-                />
-              </div>
-
-              <div className="social-quick-chips">
-                <span className="chip-label">Quick fill demo:</span>
-                <button
-                  type="button"
-                  className="social-chip"
-                  onClick={() =>
-                    fillSampleEmail(
-                      modalProvider === "google" ? "user.tech@gmail.com" : "user.dev@linkedin.com",
-                      "Alex Rivers"
-                    )
-                  }
-                >
-                  {modalProvider === "google" ? "user.tech@gmail.com" : "user.dev@linkedin.com"}
-                </button>
-              </div>
-
-              <div className="social-modal-actions">
-                <button
-                  type="button"
-                  className="btn-modal-cancel"
-                  onClick={() => setModalProvider(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className={`btn-modal-confirm ${modalProvider === "google" ? "google-bg" : "linkedin-bg"}`}
-                  disabled={loadingProvider !== null}
-                >
-                  {loadingProvider ? "Authenticating..." : mode === "signup" ? "Create Account & Sign In ➔" : "Sign In with Social ➔"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+
