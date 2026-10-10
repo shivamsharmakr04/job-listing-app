@@ -55,13 +55,21 @@ button:focus-visible {
 
 .home-page,
 .jobs-page,
-.applications-page,
+.apps-page,
 .profile-page,
 .postjob-page,
 .dash-page,
 .admin-dashboard,
 .auth-page {
   animation: page-enter 0.35s ease-out both;
+}
+
+.app-shell .app-main input,
+.app-shell .app-main select,
+.app-shell .app-main textarea {
+  color: #1f2937;
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 @keyframes page-enter {

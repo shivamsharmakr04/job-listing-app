@@ -10,7 +10,7 @@
   margin: 0 auto;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(255, 255, 255, 0.09);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.09);
   padding: 20px 22px 22px;
 }
 
@@ -37,7 +37,7 @@
   background: #f9fafb;
   border-radius: 12px;
   padding: 12px 14px;
-  border: 1px solid #1f2937;
+  border: 1px solid #e5e7eb;
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease,
     border-color 0.12s ease;
@@ -45,7 +45,7 @@
 
 .dash-tile:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.11);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.11);
   border-color: #d1d5db;
 }
 

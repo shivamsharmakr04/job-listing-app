@@ -93,7 +93,7 @@ html, body {
   background: #f1f5f9;
   border-radius: 12px;
   padding: 18px;
-  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .app-content-card p {
