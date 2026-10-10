@@ -52,3 +52,37 @@ button:focus-visible {
   outline: 3px solid #2563eb;
   outline-offset: 2px;
 }
+
+.home-page,
+.jobs-page,
+.applications-page,
+.profile-page,
+.postjob-page,
+.dash-page,
+.admin-dashboard,
+.auth-page {
+  animation: page-enter 0.35s ease-out both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

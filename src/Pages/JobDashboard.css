@@ -1,12 +1,12 @@
 /* ============================================================
    JobDashboard.css — Candidate Command Center Styling
-   Aligned with dark midnight glass design system (#0f172a / #030712)
+   Aligned with dark midnight glass design system (#ffffff / #f8fafc)
    ============================================================ */
 
 .dash-page {
   min-height: 100vh;
   padding-bottom: 60px;
-  color: #f8fafc;
+  color: #1f2937;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   position: relative;
@@ -17,9 +17,9 @@
   top: 24px;
   right: 32px;
   z-index: 9999;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid #6366f1;
-  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #2563eb;
+  color: #1f2937;
   padding: 12px 20px;
   border-radius: 12px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
@@ -29,8 +29,8 @@
 
 /* ─── HERO BANNER ────────────────────────────────────────── */
 .dash-hero-banner {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 24px;
   padding: 32px 36px;
   margin-bottom: 24px;
@@ -45,9 +45,9 @@
 
 .dash-hero-badge {
   display: inline-block;
-  background: rgba(99, 102, 241, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(37, 99, 235, 0.15);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.3);
   padding: 4px 14px;
   border-radius: 999px;
   font-size: 0.8rem;
@@ -59,14 +59,14 @@
   font-size: 2rem;
   font-weight: 800;
   margin: 0 0 6px 0;
-  background: linear-gradient(135deg, #a855f7, #6366f1, #38bdf8);
+  background: linear-gradient(135deg, #3b82f6, #2563eb, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dash-hero-text p {
   margin: 0;
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.92rem;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .btn-dash-primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -84,7 +84,7 @@
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
   transition: all 0.2s ease;
 }
 
@@ -94,9 +94,9 @@
 }
 
 .btn-dash-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #1f2937;
   padding: 10px 20px;
   border-radius: 999px;
   font-size: 0.88rem;
@@ -106,8 +106,8 @@
 }
 
 .btn-dash-secondary:hover {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: #6366f1;
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
 }
 
 /* ─── METRICS GRID ───────────────────────────────────────── */
@@ -119,8 +119,8 @@
 }
 
 .dash-metric-card {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -132,7 +132,7 @@
 
 .metric-icon {
   font-size: 1.8rem;
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(37, 99, 235, 0.15);
   padding: 10px;
   border-radius: 14px;
 }
@@ -144,20 +144,20 @@
 
 .metric-title {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 600;
 }
 
 .metric-num {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: #1f2937;
   margin-top: 2px;
 }
 
 .dash-metric-card.yellow .metric-num { color: #f59e0b; }
 .dash-metric-card.green .metric-num { color: #34d399; }
-.dash-metric-card.purple .metric-num { color: #c084fc; }
+.dash-metric-card.purple .metric-num { color: #2563eb; }
 
 /* ─── TABS BAR ───────────────────────────────────────────── */
 .dash-tabs-bar {
@@ -169,9 +169,9 @@
 }
 
 .dash-tab-chip {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #475569;
   padding: 10px 20px;
   border-radius: 999px;
   font-size: 0.86rem;
@@ -182,16 +182,16 @@
 }
 
 .dash-tab-chip:hover {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: #6366f1;
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
   color: #ffffff;
 }
 
 .dash-tab-chip.active {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #ffffff;
   border-color: transparent;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
 }
 
 /* ─── PANELS & GRID ──────────────────────────────────────── */
@@ -202,8 +202,8 @@
 }
 
 .dash-panel-card {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 24px;
   backdrop-filter: blur(12px);
@@ -214,8 +214,8 @@
   margin: 0 0 16px 0;
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f8fafc;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #1f2937;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   padding-bottom: 12px;
 }
 
@@ -229,8 +229,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.06);
   padding: 12px 16px;
   border-radius: 14px;
 }
@@ -239,7 +239,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #ffffff;
   font-weight: 800;
   display: flex;
@@ -256,13 +256,13 @@
   margin: 0 0 2px 0;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: #1f2937;
 }
 
 .activity-meta p {
   margin: 0;
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .dash-status-pill {
@@ -272,7 +272,7 @@
   font-weight: 700;
 }
 
-.dash-status-pill.applied { background: rgba(99, 102, 241, 0.18); color: #c084fc; }
+.dash-status-pill.applied { background: rgba(37, 99, 235, 0.18); color: #2563eb; }
 .dash-status-pill.reviewing, .dash-status-pill.in\ review { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
 .dash-status-pill.accepted, .dash-status-pill.offer { background: rgba(16, 185, 129, 0.18); color: #34d399; }
 
@@ -283,11 +283,11 @@
 }
 
 .quick-action-btn {
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 14px;
   padding: 14px 16px;
-  color: #cbd5e1;
+  color: #475569;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
@@ -299,8 +299,8 @@
 }
 
 .quick-action-btn:hover {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: #6366f1;
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
   color: #ffffff;
   transform: translateX(4px);
 }
@@ -315,8 +315,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 16px;
   padding: 16px 20px;
   gap: 16px;
@@ -330,7 +330,7 @@
 }
 
 .app-row-company h4 { margin: 0 0 2px 0; font-size: 0.95rem; font-weight: 700; }
-.app-row-company p { margin: 0; font-size: 0.8rem; color: #94a3b8; }
+.app-row-company p { margin: 0; font-size: 0.8rem; color: #64748b; }
 .app-row-date { font-size: 0.8rem; color: #64748b; }
 
 .saved-jobs-grid, .recommended-jobs-grid {
@@ -340,8 +340,8 @@
 }
 
 .recommended-card, .saved-mini-card {
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 16px;
   padding: 18px;
   display: flex;
@@ -350,5 +350,5 @@
 }
 
 .rec-card-top h4, .saved-mini-card h4 { margin: 0 0 2px 0; font-size: 0.95rem; font-weight: 700; }
-.rec-card-top p, .saved-mini-card p { margin: 0; font-size: 0.8rem; color: #94a3b8; }
+.rec-card-top p, .saved-mini-card p { margin: 0; font-size: 0.8rem; color: #64748b; }
 .rec-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }

@@ -5,7 +5,7 @@
 .admin-dashboard {
   min-height: 100vh;
   padding-bottom: 60px;
-  color: #f8fafc;
+  color: #1f2937;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   position: relative;
@@ -16,9 +16,9 @@
   top: 24px;
   right: 32px;
   z-index: 9999;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid #6366f1;
-  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #2563eb;
+  color: #1f2937;
   padding: 12px 20px;
   border-radius: 12px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
@@ -28,8 +28,8 @@
 
 /* ─── HEADER BANNER ──────────────────────────────────────── */
 .ad-header {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 24px;
   padding: 32px 36px;
   margin-bottom: 24px;
@@ -45,11 +45,11 @@
 .ad-welcome {
   margin: 0 0 4px 0;
   font-size: 0.88rem;
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .ad-welcome span {
-  color: #c084fc;
+  color: #2563eb;
   font-weight: 700;
 }
 
@@ -57,14 +57,14 @@
   font-size: 2rem;
   font-weight: 800;
   margin: 0 0 6px 0;
-  background: linear-gradient(135deg, #a855f7, #6366f1, #38bdf8);
+  background: linear-gradient(135deg, #3b82f6, #2563eb, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .ad-subtext {
   margin: 0;
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.9rem;
 }
 
@@ -79,8 +79,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   padding: 6px 14px;
   border-radius: 999px;
 }
@@ -89,7 +89,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #fff;
   font-weight: 800;
   display: flex;
@@ -117,20 +117,20 @@
 }
 
 .ad-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
 }
 
 .ad-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
 .ad-btn-outline {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #1f2937;
 }
 
-.ad-btn-outline:hover { background: rgba(99, 102, 241, 0.15); border-color: #6366f1; }
+.ad-btn-outline:hover { background: rgba(37, 99, 235, 0.15); border-color: #2563eb; }
 
 .ad-btn-danger {
   background: rgba(244, 63, 94, 0.15);
@@ -149,8 +149,8 @@
 }
 
 .ad-stat-card {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -161,12 +161,12 @@
 
 .ad-stat-icon {
   font-size: 1.8rem;
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(37, 99, 235, 0.15);
   padding: 8px;
   border-radius: 12px;
 }
 
-.ad-stat-label { font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin: 0; }
+.ad-stat-label { font-size: 0.8rem; color: #64748b; font-weight: 600; margin: 0; }
 .ad-stat-card h2 { font-size: 1.8rem; font-weight: 800; margin: 2px 0; }
 .ad-stat-footer { font-size: 0.72rem; color: #64748b; margin: 0; }
 
@@ -178,9 +178,9 @@
 }
 
 .ad-tab-btn {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #475569;
   padding: 10px 20px;
   border-radius: 999px;
   font-size: 0.86rem;
@@ -190,10 +190,10 @@
 }
 
 .ad-tab-btn.active {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #ffffff;
   border-color: transparent;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
 }
 
 /* ─── PANELS ────────────────────────────────────────────── */
@@ -204,8 +204,8 @@
 }
 
 .ad-panel {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 24px;
   backdrop-filter: blur(12px);
@@ -217,7 +217,7 @@
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .ad-panel-header h2 { margin: 0; font-size: 1.1rem; font-weight: 700; }
@@ -225,7 +225,7 @@
 .ad-tab-link {
   background: transparent;
   border: none;
-  color: #c084fc;
+  color: #2563eb;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
@@ -239,11 +239,11 @@
 }
 
 .ad-quick-btn {
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 16px;
   padding: 14px 18px;
-  color: #f8fafc;
+  color: #1f2937;
   font-size: 0.9rem;
   cursor: pointer;
   display: flex;
@@ -255,15 +255,15 @@
 }
 
 .ad-quick-btn:hover {
-  background: rgba(99, 102, 241, 0.18);
-  border-color: #6366f1;
+  background: rgba(37, 99, 235, 0.18);
+  border-color: #2563eb;
   transform: translateX(4px);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
 }
 
 .ad-quick-btn span {
   font-size: 1.4rem;
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(37, 99, 235, 0.15);
   padding: 8px;
   border-radius: 12px;
   display: flex;
@@ -275,20 +275,20 @@
   display: block;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: #1f2937;
 }
 
 .ad-quick-btn small {
   display: block;
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: #64748b;
   margin-top: 2px;
 }
 
 /* APPLICATIONS TAB FILTERS */
 .ad-filters {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -310,12 +310,12 @@
 .ad-filter-group label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #475569;
 }
 
 .ad-filter-group select, .ad-filter-group input {
-  background: rgba(2, 6, 23, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 12px;
   padding: 10px 14px;
   color: #ffffff;
@@ -324,19 +324,19 @@
 }
 
 .ad-filter-group select option {
-  background: #0f172a;
+  background: #ffffff;
 }
 
 /* CHART & RECENT LIST */
 .ad-chart { display: flex; flex-direction: column; gap: 10px; }
 
 .ad-chart-row { display: flex; align-items: center; gap: 12px; font-size: 0.82rem; }
-.ad-chart-label { width: 80px; color: #94a3b8; }
+.ad-chart-label { width: 80px; color: #64748b; }
 
 .ad-chart-track {
   flex: 1;
   height: 8px;
-  background: rgba(2, 6, 23, 0.6);
+  background: rgba(248, 250, 252, 0.6);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -350,17 +350,17 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(2, 6, 23, 0.6);
+  background: rgba(248, 250, 252, 0.6);
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 .ad-candidate-avatar {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #fff;
   font-weight: 800;
   display: flex;
@@ -372,7 +372,7 @@
 
 .ad-recent-info { flex: 1; }
 .ad-recent-name { margin: 0 0 2px 0; font-size: 0.88rem; font-weight: 700; }
-.ad-recent-job { margin: 0; font-size: 0.78rem; color: #94a3b8; }
+.ad-recent-job { margin: 0; font-size: 0.78rem; color: #64748b; }
 
 .ad-status-pill {
   padding: 3px 10px;
@@ -393,19 +393,19 @@
 
 .ad-table th {
   padding: 12px 14px;
-  color: #94a3b8;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #64748b;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   font-weight: 600;
 }
 
 .ad-table td {
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .ad-status-select {
-  background: rgba(2, 6, 23, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(15, 23, 42, 0.12);
   color: #ffffff;
   padding: 4px 8px;
   border-radius: 8px;
@@ -414,7 +414,7 @@
 }
 
 .ad-resume-link {
-  color: #38bdf8;
+  color: #2563eb;
   text-decoration: none;
   font-weight: 600;
 }
@@ -426,8 +426,8 @@
 }
 
 .ad-job-tile {
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 16px;
   padding: 18px;
   display: flex;
@@ -437,7 +437,7 @@
 
 .ad-job-tile-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .ad-job-tile-top h3 { margin: 0 0 4px 0; font-size: 1rem; }
-.ad-job-tile-meta { margin: 0; font-size: 0.8rem; color: #94a3b8; }
+.ad-job-tile-meta { margin: 0; font-size: 0.8rem; color: #64748b; }
 
 .ad-badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
 .ad-open { background: rgba(16, 185, 129, 0.15); color: #34d399; }
@@ -446,7 +446,7 @@
 .ad-job-tile-stats {
   display: flex;
   gap: 16px;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(255, 255, 255, 0.6);
   padding: 10px 14px;
   border-radius: 10px;
 }
