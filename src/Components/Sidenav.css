@@ -28,7 +28,7 @@
   background: rgba(255, 255, 255, 0.9);
   color: #1f2937;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12), 0 0 15px rgba(37, 99, 235, 0.25);
   backdrop-filter: blur(12px);
   font-size: 1.1rem;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -65,7 +65,7 @@
   box-sizing: border-box;
   z-index: 1050;
   border-right: 1px solid var(--snav-border);
-  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 0 30px rgba(15, 23, 42, 0.12);
   transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: visible;
 }
@@ -265,7 +265,7 @@
 
 .nav-item.active {
   background: var(--snav-active-gradient);
-  color: #ffffff;
+  color: #1d4ed8;
   border: 1px solid rgba(59, 130, 246, 0.35);
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2);
 }
@@ -416,7 +416,6 @@
 
   .snav.mobile.mobile-open {
     transform: translateX(0);
-    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.8);
+    box-shadow: 10px 0 40px rgba(15, 23, 42, 0.14);
   }
 }
-

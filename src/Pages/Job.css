@@ -23,7 +23,7 @@
   color: #1f2937;
   padding: 12px 20px;
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 0 20px rgba(37, 99, 235, 0.3);
   backdrop-filter: blur(12px);
   font-size: 0.9rem;
   font-weight: 600;
@@ -48,7 +48,7 @@
   align-items: center;
   gap: 24px;
   flex-wrap: wrap;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
 }
 
 .jobs-hero-text {
@@ -282,7 +282,7 @@
   transform: translateY(-4px);
   border-color: rgba(37, 99, 235, 0.5);
   background: rgba(241, 245, 249, 0.85);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12), 0 0 20px rgba(37, 99, 235, 0.2);
 }
 
 .card-top-row {
@@ -453,7 +453,7 @@
   max-width: 560px;
   width: 100%;
   position: relative;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.14);
 }
 
 .modal-close {

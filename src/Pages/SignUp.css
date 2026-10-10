@@ -25,7 +25,7 @@
   margin: 0 0 8px;
   font-size: 24px;
   font-weight: 700;
-  color: #f9fafb;
+  color: #1f2937;
 }
 
 .signup-left p {
@@ -50,7 +50,7 @@
 
 .signup-left li::before {
   content: "•";
-  color: #bbf7d0;
+  color: #2563eb;
 }
 
 /* right side */
